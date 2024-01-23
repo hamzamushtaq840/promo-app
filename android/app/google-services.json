@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "62999815966",
+    "project_id": "fidelity-fed68",
+    "storage_bucket": "fidelity-fed68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62999815966:android:45eba92b5f296c0b644b0f",
+        "android_client_info": {
+          "package_name": "com.hamzamushtaq840.fidelity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClw81Jhqh7acrqoWN5E348PxJPt_wrQK8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

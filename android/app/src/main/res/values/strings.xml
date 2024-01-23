@@ -1,0 +1,8 @@
+<resources>
+  <string name="app_name">fidelity</string>
+  <string name="expo_splash_screen_resize_mode" translatable="false">contain</string>
+  <string name="expo_splash_screen_status_bar_translucent" translatable="false">false</string>
+  <string name="facebook_app_id">48127127xxxxxxxx</string>
+  <string name="facebook_client_token">c5078631e4065b60d7544a95xxxxxxxx</string>
+  <string name="fb_login_protocol_scheme">fb48127127xxxxxxxx</string>
+</resources>

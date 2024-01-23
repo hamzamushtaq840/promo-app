@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization"
+    ],
+    "name": "fidelity",
+    "slug": "fidelity",
+    "splash": {
+      "image": "./assets/Logo.png",
+      "backgroundColor": "#3D195B",
+      "resizeMode": "contain"
+    },
+    "extra": {
+      "supportsRTL": true,
+      "router": {
+        "origin": false
+      }
+        }
+  }
+}
