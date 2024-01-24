@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
 const IconsPack = {
   name: 'assets',
   icons: {
+    'menu': createIcon(Icons['pencil']),
     'menu': createIcon(Icons['menu']),
     'notifications': createIcon(Icons['notifications']),
     'search': createIcon(Icons['search']),

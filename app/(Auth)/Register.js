@@ -16,6 +16,7 @@ import EyeOff from '../../svg/EyeOff';
 import Lock from '../../svg/Lock';
 import { auth, db } from '../../utlils/firebase';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { i18n } from '../../translations'; 
 
 const Register = () => {
   const router = useRouter();
@@ -50,13 +51,15 @@ const Register = () => {
           name: name,
           email: email,
           bookings:[],
-          favourites:[]
+          favourites:[],
+          permissions:[]
         })
         openDialog({ title: 'Account created' });
         router.push({ pathname: '/' })
       }
     } catch (error) {
       Keyboard.dismiss()
+      console.log(error);
       if (error.code === 'auth/email-already-in-use') {
         openDialog({ title: 'Account with this email already exists' })
       } else if (error.code === 'auth/invalid-login-credentials') {
@@ -73,18 +76,18 @@ const Register = () => {
       <KeyboardAwareScrollView contentContainerStyle={{ flex: 1, backgroundColor: '#FFFFFF' }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
           <View style={{ width: '100%', alignItems: 'flex-start' }}>
-            <Text style={{ fontSize: 22, textAlign: 'left', marginTop: 40, ...FONTS['500'], marginBottom: 32 }}>Get Started!</Text>
+            <Text style={{ fontSize: 22, textAlign: 'left', marginTop: 40, ...FONTS['500'], marginBottom: 32 }}>{i18n.t('welcome')}</Text>
           </View>
-          <InputField placeholder="Full name" inputStyles={{ backgroundColor: "#F4F4F5" }} onChangeText={(text) => setName(text)} propIcon={<TouchableWithoutFeedback ><View ><Email /></View></TouchableWithoutFeedback>} />
-          <InputField placeholder="Email address" inputStyles={{ backgroundColor: "#F4F4F5", marginTop: 32 }} onChangeText={(text) => setEmail(text)} propIcon={<TouchableWithoutFeedback ><View ><Email /></View></TouchableWithoutFeedback>} />
-          <InputField placeholder="Password" secureTextEntry={showPassword} inputStyles={{ backgroundColor: "#F4F4F5", marginTop: 32 }} onChangeText={(text) => setPassword(text)} propIcon={<TouchableWithoutFeedback ><View ><Lock /></View></TouchableWithoutFeedback>} icon={<TouchableWithoutFeedback onPress={() => { setShowPassword(!showPassword) }}><View style={{ padding: 20 }}>{showPassword ? <EyeOff /> : <Eye />}</View></TouchableWithoutFeedback>} />
-          <InputField placeholder="Confirm password" secureTextEntry={showPassword2} inputStyles={{ backgroundColor: "#F4F4F5", marginTop: 32 }} onChangeText={(text) => setConfirmPassword(text)} propIcon={<TouchableWithoutFeedback ><View ><Lock /></View></TouchableWithoutFeedback>} icon={<TouchableWithoutFeedback onPress={() => { setShowPassword2(!showPassword2); }}><View style={{ padding: 20 }}>{showPassword2 ? <EyeOff /> : <Eye />}</View></TouchableWithoutFeedback>} />
+          <InputField placeholder={i18n.t('fullName')} inputStyles={{ backgroundColor: "#F4F4F5" }} onChangeText={(text) => setName(text)} propIcon={<TouchableWithoutFeedback ><View ><Email /></View></TouchableWithoutFeedback>} />
+          <InputField placeholder={i18n.t('emailPlaceholder')} inputStyles={{ backgroundColor: "#F4F4F5", marginTop: 32 }} onChangeText={(text) => setEmail(text)} propIcon={<TouchableWithoutFeedback ><View ><Email /></View></TouchableWithoutFeedback>} />
+          <InputField placeholder={i18n.t('passwordPlaceholder')} secureTextEntry={showPassword} inputStyles={{ backgroundColor: "#F4F4F5", marginTop: 32 }} onChangeText={(text) => setPassword(text)} propIcon={<TouchableWithoutFeedback ><View ><Lock /></View></TouchableWithoutFeedback>} icon={<TouchableWithoutFeedback onPress={() => { setShowPassword(!showPassword) }}><View style={{ padding: 20 }}>{showPassword ? <EyeOff /> : <Eye />}</View></TouchableWithoutFeedback>} />
+          <InputField placeholder={i18n.t('confirmPasswordPlaceholder')} secureTextEntry={showPassword2} inputStyles={{ backgroundColor: "#F4F4F5", marginTop: 32 }} onChangeText={(text) => setConfirmPassword(text)} propIcon={<TouchableWithoutFeedback ><View ><Lock /></View></TouchableWithoutFeedback>} icon={<TouchableWithoutFeedback onPress={() => { setShowPassword2(!showPassword2); }}><View style={{ padding: 20 }}>{showPassword2 ? <EyeOff /> : <Eye />}</View></TouchableWithoutFeedback>} />
           <View style={{ width: '100%', }}>
-            <Text style={{ fontSize: 13, textAlign: 'center', marginTop: 16, marginBottom: 56, ...FONTS['400'] }}>By registering you agree to our<Text style={{ ...FONTS['500'] }}> Terms and Conditions</Text></Text>
+            <Text style={{ fontSize: 13, textAlign: 'center', marginTop: 16, marginBottom: 56, ...FONTS['400'] }}>{i18n.t('c1')} <Text style={{ ...FONTS['500'] }}>{i18n.t('c2')} </Text></Text>
           </View>
-          <Button children={isLoading ? <Loader /> : "Register"} style={{ width: 182 }} onPress={handleSubmit} />
+          <Button children={isLoading ? <Loader /> : i18n.t('register')} style={{ width: 182 }} onPress={handleSubmit} />
           <TouchableOpacity onPress={() => router.push('/')}>
-            <Text style={{ fontSize: 14, gap: 16, marginBottom: 10, marginTop: 8, ...FONTS['700'] }}>Login</Text>
+            <Text style={{ fontSize: 14, gap: 16, marginBottom: 10, marginTop: 8, ...FONTS['700'] }}>{i18n.t('login')}</Text>
           </TouchableOpacity>
           <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
             <TouchableOpacity>

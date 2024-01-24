@@ -24,58 +24,7 @@ import { useQuery } from '@tanstack/react-query'
 import HStack from '../../components/Generic/HStack'
 import { FONTS } from '../../constants/theme';
 import Loader from '../../components/Generic/Loader'
-
-export const data_products = [
-  {
-    image:
-      'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
-    name: 'Taquito Cheese',
-    amount: 8.99,
-    rate: 3,
-  },
-  {
-    image:
-      'https://images.unsplash.com/photo-1595348020949-87cdfbb44174?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80',
-    name: 'Chalupa Supreme',
-    amount: 5.22,
-    rate: 4,
-  },
-  {
-    image:
-      'https://images.unsplash.com/photo-1596357395217-80de13130e92?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1771&q=80',
-    name: 'Chalupa Supreme',
-    amount: 5.22,
-    rate: 4,
-  },
-  {
-    image:
-      'https://user-images.githubusercontent.com/42206067/227762650-e4073f34-08f7-4ebd-9d15-a20c9edfb88f.png',
-    name: 'Taquito Cheese',
-    amount: 8.99,
-    rate: 3,
-  },
-  {
-    image:
-      'https://user-images.githubusercontent.com/42206067/227762652-82737b9b-afc3-4820-8a9c-2997c668170f.png',
-    name: 'Chalupa Supreme',
-    amount: 5.22,
-    rate: 4,
-  },
-  {
-    image:
-      'https://user-images.githubusercontent.com/42206067/227762650-e4073f34-08f7-4ebd-9d15-a20c9edfb88f.png',
-    name: 'Taquito Cheese',
-    amount: 8.99,
-    rate: 3,
-  },
-];
-
-export const data_images = [
-  Images.home.banner,
-  Images.home.banner2,
-  Images.home.banner3,
-  Images.home.banner4,
-];
+import { i18n } from '../../translations'; 
 
 const Home = () => {
   const { width } = useLayout();
@@ -87,7 +36,7 @@ const Home = () => {
   const [index, setIndex] = React.useState(0);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [isAutoSliding, setIsAutoSliding] = React.useState(true);
-  const categoryLanguage = 'en'
+  const categoryLanguage = i18n.locale
   const scrollHandler = useAnimatedScrollHandler((event) => {
     translationX.value = event.contentOffset.x;
   });
@@ -201,27 +150,17 @@ const Home = () => {
     }}>
       <TopNavigation
         alignment="center"
-        title={<Text>Home</Text>}
+        title={<Text>{i18n.t('home')}</Text>}
         accessoryRight={<NavigationAction marginHorizontal={6} height={20} width={16} icon="notifications" onPress={() => { console.log("notification"); }} />}
       />
       <Content contentContainerStyle={styles.content}>
         <VStack padder border={10}>
           <Input
-            placeholder={'Search'}
+            placeholder={i18n.t('search')}
             accessoryLeft={<Image source={require('./../../assets/icons/search.png')} marginHorizontal={10} style={{ width: 10, height: 10 }} />}
             style={styles.userInput}
           />
         </VStack>
-        {/* <TabBarScrollable tabs={DATA} activeIndex={selected} onChange={setSelected} style={styles.tabBar} /> */}
-        {/* <View style={{ paddingHorizontal: 14, flexDirection: 'row', justifyContent: 'flex-end', marginTop: 15 }}>
-          <TouchableOpacity onPress={() => {
-            router.push('(Dashboard)/SpinWheel')
-          }}>
-            <Text style={{ fontSize: 14, fontFamily: 'Roboto-Regular400', color: '#959597' }}>{`Try your luck >`}</Text>
-          </TouchableOpacity>
-        </View> */}
-
-
         <VStack mt={20}>
           {images.isLoading === false && images?.data.length > 0 && <Animated.FlatList
             data={images?.data}
@@ -242,7 +181,7 @@ const Home = () => {
             <Dots translationX={translationX} data={images?.data} />
           </View>}
         </VStack>
-        <Text category="h4" style={{ fontSize: 20, paddingHorizontal: 16, marginTop: 10, ...FONTS['700'] }} >Our Categories</Text>
+        <Text category="h4" style={{ fontSize: 20, paddingHorizontal: 16, marginTop: 10, ...FONTS['700'] }} >{i18n.t('ourCategories')}</Text>
         {categories?.isLoading && <Loader status={'primary'} center mt={40} />}
         {!categories?.isLoading && <HStack wrap mt={24} pb={40}>
           {categories?.data?.map((food, index) => {
@@ -260,47 +199,6 @@ const Home = () => {
             );
           })}
         </HStack>}
-
-        {/* <VStack gap={12} mt={20}>
-          <View style={{ paddingHorizontal: 14, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400' }}>List of deals of the week</Text>
-            <Text style={{ fontSize: 14, fontFamily: 'Roboto-Regular400', color: '#959597' }}>See all</Text>
-          </View>
-          <FlatList
-            data={data_products || []}
-            renderItem={renderProduct}
-            horizontal
-            scrollEventThrottle={16}
-            keyExtractor={(i, _index) => `${_index}`}
-            style={{ flexGrow: 0 }}
-            snapToInterval={(width - 104) + 8}
-            decelerationRate="fast"
-            showsHorizontalScrollIndicator={false}
-            bounces={false}
-            pagingEnabled={false}
-            contentContainerStyle={styles.contentProduct}
-          />
-        </VStack>
-        <VStack gap={12} mt={20}>
-          <View style={{ paddingHorizontal: 14, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 18, fontWeight: 400 }}>Promo by category</Text>
-            <Text style={{ fontSize: 14, fontWeight: 400, color: '#959597' }}>See all</Text>
-          </View>
-          <FlatList
-            data={data_products || []}
-            renderItem={renderProduct}
-            horizontal
-            scrollEventThrottle={16}
-            keyExtractor={(i, _index) => `${_index}`}
-            style={{ flexGrow: 0 }}
-            snapToInterval={(width - 104) + 8}
-            decelerationRate="fast"
-            showsHorizontalScrollIndicator={false}
-            bounces={false}
-            pagingEnabled={false}
-            contentContainerStyle={styles.contentProduct}
-          />
-        </VStack> */}
       </Content>
       <Navbar />
     </Container>

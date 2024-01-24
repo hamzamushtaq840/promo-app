@@ -19,4 +19,6 @@ export const Icons = {
   'dots': require('./dots.png'),
   'forgot': require('./forgot.png'),
   'cards2': require('./cards2.png'),
+  "pencil": require('./ic_pencil.png'),
+
 };

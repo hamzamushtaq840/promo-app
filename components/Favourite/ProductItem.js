@@ -17,7 +17,7 @@ const ProductItem = ({ item, onPress, style }) => {
   const { userData } = useUserData()
   const openDialog = useCustomToast();
   
-  const removePromoFromUserBookings = async () => {
+  const removePromoFromUserFavorites = async () => {
     try {
       setLoading(true); // Set loading to true when the operation starts
 
@@ -26,16 +26,16 @@ const ProductItem = ({ item, onPress, style }) => {
 
       // Update the user document to remove the promoId from the favorites array
       await updateDoc(userRef, {
-        bookings: arrayRemove(item.id),
+        favourites: arrayRemove(item.id),
       });
 
       // Invalidate the user data query to reflect the changes
       await queryClient.invalidateQueries({ queryKey: ['userData'] });
-      await queryClient.invalidateQueries({ queryKey: ['bookings'] });
+      await queryClient.invalidateQueries({ queryKey: ['favourites'] });
 
-      openDialog({ title: 'Removed from bookings' });
+      openDialog({ title: 'Removed from favourites' });
     } catch (error) {
-      console.error('Error removing promo from bookings:', error.message);
+      console.error('Error removing promo from favourites:', error.message);
     } finally {
       setLoading(false); // Set loading to false regardless of success or failure
     }
@@ -53,7 +53,7 @@ const ProductItem = ({ item, onPress, style }) => {
           <Text style={{ fontFamily: 'Roboto-Medium500', fontSize: 16, lineHeight: 24 }}>
             $ {item.price}
           </Text>
-          <TouchableOpacity  onPress={() => { removePromoFromUserBookings()}}>
+          <TouchableOpacity  onPress={() => { removePromoFromUserFavorites()}}>
             {!loading && <Icon name="delete" style={{ width: 24, height: 24 }} color="red" />}
             {loading && <Spinner size='small' />}
           </TouchableOpacity>

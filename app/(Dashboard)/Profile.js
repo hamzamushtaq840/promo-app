@@ -1,7 +1,7 @@
-import { Avatar, Button, Icon, StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components';
-import React, { memo } from 'react';
+import { Avatar, Button, Icon, StyleService, TopNavigation, useStyleSheet, useTheme } from '@ui-kitten/components';
+import React, { memo, useEffect } from 'react';
 import Information from '../../components/Profile/Information';
-import { TouchableOpacity } from 'react-native'
+import { Image, TouchableOpacity, View } from 'react-native'
 import Container from '../../components/Generic/Container';
 import VStack from '../../components/Generic/VStack';
 import useLayout from '../../hooks/useLayout';
@@ -14,11 +14,79 @@ import Text from '../../components/Generic/Text';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import useUserData from '../../hooks/useUserData';
+import * as ImagePicker from 'expo-image-picker';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { generateRandomId } from '../../utlils/generateRandomId';
+import { useQueryClient } from '@tanstack/react-query';
+import { doc, updateDoc } from 'firebase/firestore';
+import { auth, db } from '../../utlils/firebase';
+import { useCustomToast } from '../../hooks/useCustomToast';
+import { signOut } from 'firebase/auth';
+import { Icons } from '../../assets/icons';
+import Loader from '../../components/Generic/Loader';
 
 const Profile10 = memo(() => {
   const { top } = useLayout();
   const router = useRouter();
+  const themes = useTheme()
   const styles = useStyleSheet(themedStyles);
+  const { userData } = useUserData()
+  const [profilePicture, setProfilePicture] = React.useState(null)
+  const [isLoading, setLoading] = React.useState(false)
+  const openDialog = useCustomToast();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    setProfilePicture(userData?.profilePicture ?? null)
+  }, [])
+
+  async function uploadImageAsync(uri) {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const storage = getStorage();
+      const randomId = generateRandomId(8); // Change the length as needed
+      const fileRef = ref(storage, `${randomId}.jpg`);
+
+      const snapshot = await uploadBytes(fileRef, blob);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      return downloadURL;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Image upload failed');
+    }
+  }
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      try {
+        setLoading(true)
+        let imageUrl = await uploadImageAsync(result.assets[0].uri);
+        const docRef = doc(db, 'users', userData.userId)
+        await updateDoc(docRef, {
+          profilePicture: imageUrl,
+        })
+        await queryClient.invalidateQueries({ queryKey: ['userData'] });
+        openDialog({ title: 'Image Updated' });
+        setProfilePicture(imageUrl)
+      } catch (error) {
+        console.log(error);
+      }
+      finally {
+        setLoading(false)
+      }
+    }
+  };
 
   return (
     <Container style={styles.container}>
@@ -32,17 +100,30 @@ const Profile10 = memo(() => {
       </VStack>
       <Content contentContainerStyle={styles.content}>
         <VStack itemsCenter style={styles.topContent}>
-          <Avatar
-            source={Images.avatar.avatar_01}
-            style={styles.avatar}
-            shape="rounded"
-          />
-          <Text category="h3" style={{ color: '#E8E9EB' }} marginBottom={10}>
-            Philip Schmidt
-          </Text>
+          <View style={{ position: 'relative' }}>
+            <View style={{ position: 'absolute', bottom:10, right: -9, zIndex: 1000000000, padding: 2, borderRadius: 200, backgroundColor: themes['color-basic-400'] }}>
+              <TouchableOpacity onPress={() => pickImage()} >
+                <Image source={Icons?.pencil} />
+              </TouchableOpacity>
+            </View>
+            {!isLoading && (
+              profilePicture ? (
+                <Image style={styles.avatar} source={{ uri: profilePicture }} />
+              ) : (
+                <Avatar
+                  source={Images.avatar.avatar_01}
+                  style={styles.avatar}
+                  shape="rounded"
+                />
+              )
+            )}
+            {isLoading && <View style={styles.avatar2}>
+              <Loader />
+            </View>}
+          </View>
         </VStack>
         <VStack border={16} mt={10}>
-          <Information/>
+          <Information />
         </VStack>
 
         <TouchableOpacity onPress={async () => {
@@ -50,10 +131,11 @@ const Profile10 = memo(() => {
           while (router.canGoBack()) { // Pop from stack until one element is left
             router.back();
           }
+          await signOut(auth);
           router.replace('/')
         }}>
           <Text
-            style={{ alignSelf: 'center', marginTop: 80, marginBottom: 20 }}
+            style={{ alignSelf: 'center', marginTop: 20, marginBottom: 20 }}
             category="h6"
           >
             Logout
@@ -115,6 +197,17 @@ const themedStyles = StyleService.create({
     width: 96,
     height: 96,
     marginVertical: 16,
+    borderRadius: 13,
+  },
+  avatar2: {
+    marginVertical: 16,
+    width: 90,
+    height: 96,
+    borderRadius: 13,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#757575',
   },
   button2: {
     flex: 1,

@@ -1,20 +1,20 @@
-import React from 'react'
-import Container from '../../components/Generic/Container';
-import { Input, TopNavigation } from '@ui-kitten/components';
-import Text from '../../components/Generic/Text';
-import NavigationAction from '../../components/Generic/NavigationAction';
-import Content from '../../components/Generic/Content';
-import VStack from '../../components/Generic/VStack';
-import { FlatList, Image, StyleSheet, View } from 'react-native';
-import Navbar from '../../components/Navbar';
-import { Timestamp, collection, collectionGroup, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
-import { db } from '../../utlils/firebase';
 import { useQuery } from '@tanstack/react-query';
-import ProductItem from '../../components/Home/ProductItem';
+import { TopNavigation } from '@ui-kitten/components';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import useLayout from '../../hooks/useLayout';
+import { collectionGroup, getDoc, getDocs, query, where } from 'firebase/firestore';
+import React from 'react';
+import { FlatList, StyleSheet, View } from 'react-native';
+import Container from '../../components/Generic/Container';
+import Content from '../../components/Generic/Content';
 import Loader from '../../components/Generic/Loader';
-
+import NavigationAction from '../../components/Generic/NavigationAction';
+import Text from '../../components/Generic/Text';
+import VStack from '../../components/Generic/VStack';
+import ProductItem from '../../components/Home/ProductItem';
+import Navbar from '../../components/Navbar';
+import useLayout from '../../hooks/useLayout';
+import { i18n } from '../../translations';
+import { db } from '../../utlils/firebase';
 
 const SingleCategory = () => {
   const categoryName = 'Food';
@@ -23,43 +23,43 @@ const SingleCategory = () => {
   const { width } = useLayout();
   const params = useLocalSearchParams();
   const data = JSON.parse(params.category)
-  const categoryLanguage = 'en'
-  
+  const categoryLanguage = i18n.locale
+
   const activePromo = useQuery({
-  queryKey: ['activePromo', categoryName],
-  queryFn: async () => {
-    try {
-      const promoQuery = query(
-        collectionGroup(db, 'promo'),
-        where('category', '==', categoryName),
-        where('isActive', '==', true),
-      );
+    queryKey: ['activePromo', categoryName],
+    queryFn: async () => {
+      try {
+        const promoQuery = query(
+          collectionGroup(db, 'promo'),
+          where('category', '==', categoryName),
+          where('isActive', '==', true),
+        );
 
-      const promoSnapshot = await getDocs(promoQuery);
-      const promos = [];
+        const promoSnapshot = await getDocs(promoQuery);
+        const promos = [];
 
-      // Fetching promos and adding parentId field and parentData
-      for (const promoDoc of promoSnapshot.docs) {
-        const parentId = promoDoc.ref.parent.parent.id;
-        const parentDoc = await getDoc(promoDoc.ref.parent.parent);
+        // Fetching promos and adding parentId field and parentData
+        for (const promoDoc of promoSnapshot.docs) {
+          const parentId = promoDoc.ref.parent.parent.id;
+          const parentDoc = await getDoc(promoDoc.ref.parent.parent);
 
-        // Include additional data from the parent document
-        const parentData = parentDoc.exists() ? parentDoc.data() : null;
+          // Include additional data from the parent document
+          const parentData = parentDoc.exists() ? parentDoc.data() : null;
 
-        const promoData = { id: promoDoc.id, parentId, parentData, ...promoDoc.data() };
-        promos.push(promoData);
+          const promoData = { id: promoDoc.id, parentId, parentData, ...promoDoc.data() };
+          promos.push(promoData);
+        }
+
+        return promos || [];
+      } catch (error) {
+        console.error('Error fetching active promos:', error);
+        throw new Error('Error fetching active promos');
       }
-
-      return promos || [];
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Error fetching active promos:', error);
-      throw new Error('Error fetching active promos');
-    }
-  },
-  onError: (error) => {
-    console.error('Error fetching active promos:', error);
-  },
-});
+    },
+  });
 
   const renderProduct = React.useCallback(({ item }) => {
     return <ProductItem onPress={() => {
@@ -83,8 +83,8 @@ const SingleCategory = () => {
 
         <VStack gap={12} mt={20}>
           <View style={{ paddingHorizontal: 14, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400' }}>List of deals of the week</Text>
-            <Text style={{ fontSize: 14, fontFamily: 'Roboto-Regular400', color: '#959597' }}>See all</Text>
+            <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400' }}>{i18n.t('listWeek')}</Text>
+            <Text style={{ fontSize: 14, fontFamily: 'Roboto-Regular400', color: '#959597' }}>{i18n.t('seeAll')}</Text>
           </View>
           {/* {activePromo.isLoading &} */}
           {activePromo.isLoading && <Loader height={152} status={'primary'} center mt={10} />}

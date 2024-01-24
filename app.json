@@ -6,7 +6,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
     ],
     "name": "fidelity",
     "slug": "fidelity",
@@ -20,6 +26,6 @@
       "router": {
         "origin": false
       }
-        }
+    }
   }
 }

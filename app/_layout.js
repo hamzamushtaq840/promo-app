@@ -8,9 +8,11 @@ import IconsPack from '../assets/icons/IconsPack';
 import { default as customMapping } from '../constants/mapping.json';
 import { default as customTheme } from '../constants/app-theme.json';
 import { useFonts } from 'expo-font';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import ToastProvider from '../context/toastContext';
+import { i18n } from '../translations';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,15 +25,21 @@ export default function Layout() {
     'Roboto-Bold700': require('./../assets/fonts/Roboto-Bold.ttf'),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
-    }
+  useEffect(() => {
+    const checkLang = async () => {
+      if (fontsLoaded && !fontError) {
+        const langExists = await AsyncStorage.getItem('lang');
+        i18n.locale = langExists || 'en';
+        await SplashScreen.hideAsync();
+      }
+    };
+    checkLang();
   }, [fontsLoaded, fontError]);
 
-  if (!fontsLoaded && !fontError) {
+  if (!fontsLoaded || fontError) {
     return null;
   }
+
 
   return (
     <SafeAreaProvider >
@@ -42,7 +50,7 @@ export default function Layout() {
         customMapping={{ ...eva.mapping, ...customMapping }}>
         <StatusBar barStyle={'dark-content'} />
         <ToastProvider>
-            <Slot />
+          <Slot />
         </ToastProvider>
       </ApplicationProvider>
     </SafeAreaProvider>

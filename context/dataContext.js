@@ -8,6 +8,7 @@ const UserContext = createContext({});
 
 const UserProvider = ({ children }) => {
   const [address, setAddress] = useState("")
+  const [language, setLanguage] = useState("")
   const [location, setLocation] = useState({})
   const [restaurent, setRestaurents] = useState([])
 
@@ -44,7 +45,7 @@ const UserProvider = ({ children }) => {
   });
 
   return (
-    <UserContext.Provider value={{ userData: getUserData?.data }}>
+    <UserContext.Provider value={{ userData: getUserData?.data, language, setLanguage }}>
       {children}
     </UserContext.Provider>
   );

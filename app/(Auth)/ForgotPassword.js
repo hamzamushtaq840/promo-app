@@ -14,6 +14,19 @@ import { Icons } from './../../assets/icons';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import NavigationAction from '../../components/Generic/NavigationAction';
 
+
+
+
+
+
+
+//check error for email
+
+
+
+
+
+
 const Register = () => {
   const router = useRouter();
   const [email, setEmail] = useState();
