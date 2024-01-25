@@ -4,7 +4,6 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import useLayout from './../../hooks/useLayout';
 import Text from '../Generic/Text';
 
-
 const ProductItem = ({ item, onPress, style }) => {
   const theme = useTheme();
   const { width } = useLayout();
@@ -14,12 +13,12 @@ const ProductItem = ({ item, onPress, style }) => {
       activeOpacity={0.7}
       style={[
         styles.container,
-        { width: 280, height: 152, backgroundColor: "#ccc", borderRadius: 16, overflow: 'hidden' },
+        { width: 280, height: 152, backgroundColor: '#ccc', borderRadius: 16, overflow: 'hidden' },
         style,
       ]}
-      onPress={onPress} >
+      onPress={onPress}>
       <Image source={{ uri: item?.photos[0] }} style={styles.image} />
-    </TouchableOpacity >
+    </TouchableOpacity>
   );
 };
 
@@ -33,7 +32,7 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 1 / 1,
     alignSelf: 'center',
-    borderRadius: 16
+    borderRadius: 16,
   },
   row: {
     flexDirection: 'row',

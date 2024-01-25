@@ -1,26 +1,27 @@
-import { useQuery } from '@tanstack/react-query'
-import { StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components'
-import { useRouter } from 'expo-router'
-import { collectionGroup, getDoc, getDocs, query } from 'firebase/firestore'
-import { default as React } from 'react'
-import { FlatList, View } from 'react-native'
-import Container from '../../components/Generic/Container'
-import NavigationAction from '../../components/Generic/NavigationAction'
-import Text from '../../components/Generic/Text'
-import Navbar from '../../components/Navbar'
-import { FONTS } from '../../constants/theme'
-import useLayout from '../../hooks/useLayout'
-import useUserData from '../../hooks/useUserData'
-import { db } from '../../utlils/firebase'
-import ProductItem from '../../components/Favourite/ProductItem'
-import { i18n } from '../../translations' 
+import { useQuery } from '@tanstack/react-query';
+import { StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components';
+import { useRouter } from 'expo-router';
+import { collectionGroup, getDoc, getDocs, query } from 'firebase/firestore';
+import { default as React } from 'react';
+import { FlatList, View } from 'react-native';
+import Container from '../../components/Generic/Container';
+import NavigationAction from '../../components/Generic/NavigationAction';
+import Text from '../../components/Generic/Text';
+import Navbar from '../../components/Navbar';
+import { FONTS } from '../../constants/theme';
+import useLayout from '../../hooks/useLayout';
+import useUserData from '../../hooks/useUserData';
+import { db } from '../../utlils/firebase';
+import ProductItem from '../../components/Favourite/ProductItem';
+import { i18n } from '../../translations';
+import Loader from '../../components/Generic/Loader';
 
 const Favourite = () => {
   const { width, height } = useLayout();
   const styles = useStyleSheet(themedStyles);
   const [selected, setSelected] = React.useState(0);
-  const router = useRouter()
-  const { userData } = useUserData()
+  const router = useRouter();
+  const { userData } = useUserData();
 
   const favouritesQuery = useQuery({
     queryKey: ['favourites', userData?.favourites],
@@ -53,7 +54,7 @@ const Favourite = () => {
         throw new Error('Error fetching active promos');
       }
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error fetching active promos:', error);
     },
   });
@@ -63,17 +64,38 @@ const Favourite = () => {
   }, []);
 
   return (
-    <Container style={{
-      flex: 1,
-      paddingBottom: 0,
-    }}>
+    <Container
+      style={{
+        flex: 1,
+        paddingBottom: 0,
+      }}>
       <TopNavigation
         alignment="center"
         title={<Text fontWeight="bold">{i18n.t('favourites')}</Text>}
-        accessoryLeft={<NavigationAction marginRight={20} height={16} width={20} icon="back" onPress={() => { router.back(); }} />}
-        accessoryRight={<NavigationAction marginHorizontal={6} height={20} width={16} icon="notifications" onPress={() => { console.log("notification"); }} />}
+        accessoryLeft={
+          <NavigationAction
+            marginRight={20}
+            height={16}
+            width={20}
+            icon="back"
+            onPress={() => {
+              router.back();
+            }}
+          />
+        }
+        accessoryRight={
+          <NavigationAction
+            marginHorizontal={6}
+            height={20}
+            width={16}
+            icon="notifications"
+            onPress={() => {
+              console.log('notification');
+            }}
+          />
+        }
       />
-      {favouritesQuery?.data?.length > 0 ?
+      {favouritesQuery?.data?.length > 0 ? (
         <FlatList
           data={favouritesQuery?.data}
           renderItem={renderProduct}
@@ -81,15 +103,24 @@ const Favourite = () => {
           keyExtractor={(item, index) => `${index}`}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.contentContainerStyle}
-        /> : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 18,color:'#969695', ...FONTS['500'] }}>{i18n.t('noFavourites')}</Text>
-        </View>}
-      <View style={{ position: 'absolute', bottom: 0, alignSelf: "end" }}>
+        />
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          {favouritesQuery.isLoading ? (
+            <Loader status={'primary'} />
+          ) : (
+            <Text style={{ fontSize: 18, color: '#969695', ...FONTS['500'] }}>
+              {i18n.t('noFavourites')}
+            </Text>
+          )}
+        </View>
+      )}
+      <View style={{ position: 'absolute', bottom: 0, alignSelf: 'end' }}>
         <Navbar />
       </View>
-    </Container >
-  )
-}
+    </Container>
+  );
+};
 
 const DATA = ['Popular', 'Hot Today', 'Near by', 'Favorite', 'Best rate', 'Local'];
 
@@ -108,7 +139,7 @@ const themedStyles = StyleService.create({
   userInput: {
     flex: 1,
     borderRadius: 16,
-    marginTop: 10
+    marginTop: 10,
   },
   passwordInput: {
     flex: 1,
@@ -132,5 +163,4 @@ const themedStyles = StyleService.create({
   },
 });
 
-
-export default Favourite
+export default Favourite;

@@ -5,18 +5,17 @@ import { Image, StyleSheet, TouchableOpacity, View, Platform } from 'react-nativ
 import useUserData from '../../hooks/useUserData';
 import { arrayRemove, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utlils/firebase';
-import { useCustomToast } from '../../hooks/useCustomToast';
-import { i18n } from '../../translations'; 
+import { i18n } from '../../translations';
+import Toast from 'react-native-toast-message';
 
 const ProductItem = ({ item, onPress, style }) => {
   const theme = useTheme();
   const { name, rate, sales, min_amount, max_amount, image } = item;
-  const categoryLanguage = i18n.locale
+  const categoryLanguage = i18n.locale;
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
-  const { userData } = useUserData()
-  const openDialog = useCustomToast();
-  
+  const { userData } = useUserData();
+
   const removePromoFromUserFavorites = async () => {
     try {
       setLoading(true); // Set loading to true when the operation starts
@@ -33,7 +32,11 @@ const ProductItem = ({ item, onPress, style }) => {
       await queryClient.invalidateQueries({ queryKey: ['userData'] });
       await queryClient.invalidateQueries({ queryKey: ['favourites'] });
 
-      openDialog({ title: 'Removed from favourites' });
+      Toast.show({
+        type: 'error',
+        position: 'bottom',
+        text1: 'Removed from favourites',
+      });
     } catch (error) {
       console.error('Error removing promo from favourites:', error.message);
     } finally {
@@ -42,20 +45,22 @@ const ProductItem = ({ item, onPress, style }) => {
   };
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.7}
-      style={[styles.container, style]}
-      onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.7} style={[styles.container, style]} onPress={onPress}>
       <Image source={{ uri: item?.photos[0] }} style={styles.image} />
       <View style={styles.content}>
-        <Text style={{ fontFamily: 'Roboto-Medium500' }} >{item.promoDetails[categoryLanguage]?.title}</Text>
+        <Text style={{ fontFamily: 'Roboto-Medium500' }}>
+          {item.promoDetails[categoryLanguage]?.title}
+        </Text>
         <View style={styles.row1}>
           <Text style={{ fontFamily: 'Roboto-Medium500', fontSize: 16, lineHeight: 24 }}>
             $ {item.price}
           </Text>
-          <TouchableOpacity  onPress={() => { removePromoFromUserFavorites()}}>
+          <TouchableOpacity
+            onPress={() => {
+              removePromoFromUserFavorites();
+            }}>
             {!loading && <Icon name="delete" style={{ width: 24, height: 24 }} color="red" />}
-            {loading && <Spinner size='small' />}
+            {loading && <Spinner size="small" />}
           </TouchableOpacity>
         </View>
       </View>
@@ -73,19 +78,19 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: "#ccc",
+    shadowColor: '#ccc',
     shadowOffset: {
       width: 0,
       height: 1,
     },
     shadowOpacity: 0.5,
-    elevation: 3
+    elevation: 3,
   },
   image: {
     width: 148,
     height: 80,
     marginRight: 24,
-    borderRadius: 12
+    borderRadius: 12,
   },
   content: {
     flex: 1,

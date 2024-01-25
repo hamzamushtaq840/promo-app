@@ -12,6 +12,7 @@ export const translations = {
     login: 'Login',
     register: 'Register',
     fullName: 'Full Name',
+    enterEmail: 'Enter Email',
     c1: 'By registering you agree to our',
     c2: ' Terms and Conditions',
     started: 'Get Started!',
@@ -23,6 +24,7 @@ export const translations = {
     favourites: 'Favourites',
     noFavourites: 'No favourites found',
     update: 'Update',
+    logout: 'Logout',
     listWeek: 'List of deals of the week',
     seeAll: 'See all',
     book: 'Book',
@@ -30,6 +32,7 @@ export const translations = {
     promoDetails: 'Promo Details',
     viewAddresses: 'View All Addresses',
     viewLess: 'View Less',
+    sendEmail:'Send Email',
   },
   fr: {
     welcome: 'Ravi de te revoir!',
@@ -42,6 +45,7 @@ export const translations = {
     login: 'Connexion',
     register: 'S\'inscrire',
     fullName: 'Nom complet',
+    enterEmail: "Entrer l'adresse e-mail",
     c1: 'En vous inscrivant, vous acceptez nos',
     c2: 'conditions générales',
     started: "Commencer !",
@@ -53,6 +57,7 @@ export const translations = {
     favourites: 'Favoris',
     noFavourites: 'Aucun favori trouvé',
     update: 'Mettre à jour',
+    logout: 'Déconnexion',
     listWeek: 'Liste des offres de la semaine',
     seeAll: 'Voir tout',
     book: 'Réserver',
@@ -60,6 +65,7 @@ export const translations = {
     promoDetails: 'Détails de la promotion',
     viewAddresses: 'Voir toutes les adresses',
     viewLess: 'Voir moins',
+    sendEmail: "Envoyer un e-mail",
   },
 };
 

@@ -8,50 +8,47 @@ import Loader from '../../components/Generic/Loader';
 import Text from '../../components/Generic/Text';
 import VStack from '../../components/Generic/VStack';
 import { FONTS } from '../../constants/theme';
-import { useCustomToast } from '../../hooks/useCustomToast';
 import { auth } from '../../utlils/firebase';
 import { Icons } from './../../assets/icons';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import NavigationAction from '../../components/Generic/NavigationAction';
-
-
-
-
-
-
-
-//check error for email
-
-
-
-
-
+import { i18n } from '../../translations';
+import Toast from 'react-native-toast-message';
 
 const Register = () => {
   const router = useRouter();
   const [email, setEmail] = useState();
-  const openDialog = useCustomToast();
   const [isLoading, setLoading] = useState(false);
   const styles = useStyleSheet(themedStyles);
 
   const handleSubmit = async () => {
     try {
       if (!email) {
-        openDialog({ title: 'Enter email please' });
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Enter email please',
+        });
       } else {
-        Keyboard.dismiss()
         setLoading(true);
         await sendPasswordResetEmail(auth, email);
-        openDialog({ title: 'Email sent successfully' });
-        setEmail('')
+        Toast.show({
+          type: 'error',
+          position: 'top',
+          text1: 'Email sent successfully',
+        });
+        setEmail('');
       }
     } catch (error) {
-      console.log(error);
-      openDialog({ title: 'Error sending email' });
+      Toast.show({
+        type: 'error',
+        position: 'bottom',
+        text1: 'Error sending email',
+      });
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -71,12 +68,19 @@ const Register = () => {
           <Image source={Icons.forgot} />
         </VStack>
         <VStack mh={16} mt={32}>
-          <Text style={{ fontSize: 22, textAlign: 'left', ...FONTS['500'], marginBottom: 20 }}>Enter Email</Text>
-          <Input value={email} onChangeText={(text) => setEmail(text)} placeholder="Email" style={styles.input} />
+          <Text style={{ fontSize: 22, textAlign: 'left', ...FONTS['500'], marginBottom: 20 }}>
+            {i18n.t('enterEmail')}
+          </Text>
+          <Input
+            value={email}
+            onChangeText={text => setEmail(text)}
+            placeholder={i18n.t('emailPlaceholder')}
+            style={styles.input}
+          />
         </VStack>
       </KeyboardAwareScrollView>
       <VStack mh={16} mb={20}>
-        <Button onPress={handleSubmit} children={isLoading ? <Loader /> : 'Send Email'} />
+        <Button onPress={handleSubmit} children={isLoading ? <Loader /> : i18n.t('sendEmail')} />
       </VStack>
     </SafeAreaView>
   );
@@ -104,6 +108,5 @@ const themedStyles = StyleService.create({
     marginTop: 0,
   },
 });
-
 
 export default Register;

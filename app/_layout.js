@@ -13,6 +13,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import ToastProvider from '../context/toastContext';
 import { i18n } from '../translations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,9 +41,8 @@ export default function Layout() {
     return null;
   }
 
-
   return (
-    <SafeAreaProvider >
+    <SafeAreaProvider>
       <IconRegistry icons={[IconsPack, EvaIconsPack]} />
       <ApplicationProvider
         {...eva}
@@ -51,10 +51,11 @@ export default function Layout() {
         <StatusBar barStyle={'dark-content'} />
         <ToastProvider>
           <Slot />
+          <Toast />
         </ToastProvider>
       </ApplicationProvider>
     </SafeAreaProvider>
-  )
+  );
 }
 
 const styles = StyleSheet.create({

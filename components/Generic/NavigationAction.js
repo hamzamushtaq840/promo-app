@@ -1,4 +1,3 @@
-
 import { Icon, TopNavigationAction, useTheme } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import React, { memo } from 'react';
@@ -32,7 +31,7 @@ const NavigationAction = memo(
       if (onPress) {
         onPress && onPress();
       } else {
-        router.back()
+        router.back();
       }
     }, [onPress]);
 
@@ -94,10 +93,9 @@ const NavigationAction = memo(
             backgroundColor: getBackground(),
             height: height,
             width: width,
-
           },
         ]}
-        icon={(props) => (
+        icon={props => (
           <Icon
             {...props}
             pack="assets"
@@ -113,7 +111,7 @@ const NavigationAction = memo(
         )}
       />
     );
-  },
+  }
 );
 
 export default NavigationAction;

@@ -8,7 +8,7 @@ import { useRouter } from 'expo-router';
 
 const SpinWheel = () => {
   const spinValue = useRef(new Animated.Value(0)).current;
-  const router = useRouter()
+  const router = useRouter();
   const [angle, setAngle] = useState(0);
 
   const interpolateInverseSpinning = spinValue.interpolate({
@@ -38,7 +38,7 @@ const SpinWheel = () => {
     outputRange: ['0deg', '360deg'],
   });
 
-  const wheelPieces = [0, 1, 2, 3, 4].map((index) => {
+  const wheelPieces = [0, 1, 2, 3, 4].map(index => {
     const startAngle = (index * 360) / 5;
     const endAngle = startAngle + 360 / 5;
     const midAngle = startAngle + (endAngle - startAngle) / 2;
@@ -54,13 +54,23 @@ const SpinWheel = () => {
 
   return (
     <Container style={styles.container}>
-       <TopNavigation
-       style={{width:'100%'}}
+      <TopNavigation
+        style={{ width: '100%' }}
         alignment="center"
         title={<Text>Wheel of fortune</Text>}
-        accessoryLeft={<NavigationAction marginHorizontal={6} height={16} width={20} icon="back" onPress={() => { router.back(); }} />}
+        accessoryLeft={
+          <NavigationAction
+            marginHorizontal={6}
+            height={16}
+            width={20}
+            icon="back"
+            onPress={() => {
+              router.back();
+            }}
+          />
+        }
       />
-      <View style={{justifyContent:'center',alignItems:'center',flex:1}}>
+      <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
         <Animated.View style={{ transform: [{ rotate: interpolateSpinning }] }}>
           <Svg height="300" width="300" viewBox="0 0 300 300">
             <G x="0" y="0">
@@ -70,9 +80,13 @@ const SpinWheel = () => {
               {wheelPieces.map((piece, index) => {
                 // Calculate the angle for the rotation of the text
                 // The angle is adjusted by -90 degrees because SVG rotation is relative to the 3 o'clock position
-                const textRotation = -1 * (piece.startAngle + (piece.endAngle - piece.startAngle) / 2 - 90);
+                const textRotation =
+                  -1 * (piece.startAngle + (piece.endAngle - piece.startAngle) / 2 - 90);
                 return (
-                  <G key={`number_group_${index}`} rotation={textRotation} origin={`${piece.textX}, ${piece.textY}`}>
+                  <G
+                    key={`number_group_${index}`}
+                    rotation={textRotation}
+                    origin={`${piece.textX}, ${piece.textY}`}>
                     <SvgText
                       key={`number_${index}`}
                       x={piece.textX}
@@ -81,8 +95,7 @@ const SpinWheel = () => {
                       fontSize="20"
                       fontWeight="bold"
                       textAnchor="middle"
-                      alignmentBaseline="middle"
-                    >
+                      alignmentBaseline="middle">
                       {piece.number}
                     </SvgText>
                   </G>
@@ -100,7 +113,7 @@ const SpinWheel = () => {
             >
               <Image
                 x="136" // Adjust the position according to your arrow's size
-                y="103"  // Adjust the position according to your arrow's size
+                y="103" // Adjust the position according to your arrow's size
                 width="30" // Adjust the size as needed
                 height="30" // Adjust the size as needed
                 href={require('./../../assets/images/knob.png')}
@@ -108,10 +121,9 @@ const SpinWheel = () => {
             </G>
           </Svg>
         </View>
-        <Button
-          onPress={spinWheel}
-          style={styles.button}
-        >Spin</Button>
+        <Button onPress={spinWheel} style={styles.button}>
+          Spin
+        </Button>
       </View>
     </Container>
   );
@@ -157,7 +169,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative'
+    position: 'relative',
   },
   wheel: {
     width: 300,

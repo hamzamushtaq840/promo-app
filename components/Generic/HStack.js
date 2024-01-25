@@ -23,7 +23,9 @@ const HStack = memo(
     itemsCenter,
     wrap,
     level,
-    gap,rowGap,columnGap,
+    gap,
+    rowGap,
+    columnGap,
     onLongPress,
     justify = 'space-between',
     onPress,
@@ -48,9 +50,9 @@ const HStack = memo(
           style={[
             {
               opacity: opacity,
-              gap:gap,
-              columnGap:columnGap,
-              rowGap:rowGap,
+              gap: gap,
+              columnGap: columnGap,
+              rowGap: rowGap,
               borderRadius: border,
               maxWidth: maxWidth,
               minWidth: minWidth,
@@ -64,8 +66,8 @@ const HStack = memo(
               alignSelf: alignSelfCenter ? 'center' : undefined,
               marginBottom: mb,
               flexDirection: 'row',
-              borderStyle:borderStyle,
-              overflow:overflow,
+              borderStyle: borderStyle,
+              overflow: overflow,
               marginLeft: ml,
               marginRight: mr,
               marginHorizontal: mh,
@@ -74,9 +76,7 @@ const HStack = memo(
               flexWrap: wrap ? 'wrap' : undefined,
               margin: margin,
               paddingVertical: pv,
-              backgroundColor: level
-                ? theme[`background-basic-color-${level}`]
-                : 'transparent',
+              backgroundColor: level ? theme[`background-basic-color-${level}`] : 'transparent',
             },
             style,
           ]}
@@ -85,7 +85,7 @@ const HStack = memo(
         </TouchableOpacity>
       </>
     );
-  },
+  }
 );
 
 export default HStack;

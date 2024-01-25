@@ -31,7 +31,7 @@ export default memo(
     fontWeight,
     ...rest
   }) => {
-    let textAlign
+    let textAlign;
 
     left
       ? (textAlign = 'left')
@@ -41,7 +41,7 @@ export default memo(
           ? (textAlign = 'center')
           : (textAlign = 'left');
 
-    let textTransform
+    let textTransform;
 
     uppercase
       ? (textTransform = 'uppercase')
@@ -53,7 +53,7 @@ export default memo(
             ? (textTransform = 'none')
             : (textTransform = 'none');
 
-    let textDecorationLine
+    let textDecorationLine;
     underline ? (textDecorationLine = 'underline') : (textDecorationLine = 'none');
 
     let fontStyle;
@@ -89,12 +89,10 @@ export default memo(
         </Text>
       </TouchableOpacity>
     );
-  },
+  }
 );
 
-const getLineHeight = (
-  category
-) => {
+const getLineHeight = category => {
   switch (category) {
     case 'giant':
       return 60;

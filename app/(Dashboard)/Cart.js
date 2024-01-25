@@ -1,28 +1,39 @@
-import { Button, StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components'
-import React from 'react'
-import { Animated, FlatList, ScrollView, View } from 'react-native'
-import ProductItem from '../../components/Cart/ProductItem'
-import Container from '../../components/Generic/Container'
-import HStack from '../../components/Generic/HStack'
-import NavigationAction from '../../components/Generic/NavigationAction'
-import Text from '../../components/Generic/Text'
-import VStack from '../../components/Generic/VStack'
-import Navbar from '../../components/Navbar'
-import useLayout from '../../hooks/useLayout'
-import { useRouter } from 'expo-router'
-import useUserData from '../../hooks/useUserData'
-import { db } from '../../utlils/firebase'
-import { FieldPath, collection, collectionGroup, doc, documentId, getDoc, getDocs, query, where } from 'firebase/firestore'
-import { useQuery } from '@tanstack/react-query'
+import { Button, StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components';
+import React from 'react';
+import { Animated, FlatList, ScrollView, View } from 'react-native';
+import ProductItem from '../../components/Cart/ProductItem';
+import Container from '../../components/Generic/Container';
+import HStack from '../../components/Generic/HStack';
+import NavigationAction from '../../components/Generic/NavigationAction';
+import Text from '../../components/Generic/Text';
+import VStack from '../../components/Generic/VStack';
+import Navbar from '../../components/Navbar';
+import useLayout from '../../hooks/useLayout';
+import { useRouter } from 'expo-router';
+import useUserData from '../../hooks/useUserData';
+import { db } from '../../utlils/firebase';
+import {
+  FieldPath,
+  collection,
+  collectionGroup,
+  doc,
+  documentId,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
+import { useQuery } from '@tanstack/react-query';
 import { FONTS } from '../../constants/theme';
-import { i18n } from '../../translations' 
+import { i18n } from '../../translations';
+import Loader from '../../components/Generic/Loader';
 
 const Home = () => {
   const { width, height } = useLayout();
   const styles = useStyleSheet(themedStyles);
   const [selected, setSelected] = React.useState(0);
-  const router = useRouter()
-  const { userData } = useUserData()
+  const router = useRouter();
+  const { userData } = useUserData();
 
   const bookingQuery = useQuery({
     queryKey: ['bookings', userData?.bookings],
@@ -55,7 +66,7 @@ const Home = () => {
         throw new Error('Error fetching active promos');
       }
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error fetching active promos:', error);
     },
   });
@@ -65,16 +76,27 @@ const Home = () => {
   }, []);
 
   return (
-    <Container style={{
-      flex: 1,
-      paddingBottom: 0,
-    }}>
+    <Container
+      style={{
+        flex: 1,
+        paddingBottom: 0,
+      }}>
       <TopNavigation
         alignment="center"
         title={<Text fontWeight="bold">{i18n.t('bookings')}</Text>}
-        accessoryLeft={<NavigationAction marginRight={20} height={16} width={20} icon="back" onPress={() => { router.back(); }} />}
+        accessoryLeft={
+          <NavigationAction
+            marginRight={20}
+            height={16}
+            width={20}
+            icon="back"
+            onPress={() => {
+              router.back();
+            }}
+          />
+        }
       />
-      {bookingQuery?.data?.length > 0 ?
+      {bookingQuery?.data?.length > 0 ? (
         <FlatList
           data={bookingQuery?.data}
           renderItem={renderProduct}
@@ -82,10 +104,18 @@ const Home = () => {
           keyExtractor={(item, index) => `${index}`}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.contentContainerStyle}
-        /> : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 18,color:'#969695', ...FONTS['500'] }}>{i18n.t('noBooking')}</Text>
-        </View>}
-
+        />
+      ) : (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          {bookingQuery.isLoading ? (
+            <Loader status={'primary'} />
+          ) : (
+            <Text style={{ fontSize: 18, color: '#969695', ...FONTS['500'] }}>
+              {i18n.t('noBooking')}
+            </Text>
+          )}
+        </View>
+      )}
 
       {/* <Animated.View style={[{ position: 'absolute', bottom: 64, width: width, paddingHorizontal: 28, paddingVertical: 20, height: 240 }]} >
         <Text style={{ fontFamily: 'Roboto-Bold700', fontSize: 14, color: '#959597', lineHeight: 20 }}>PAYMENT DETAILS</Text>
@@ -121,12 +151,12 @@ const Home = () => {
           />
         </HStack>
       </Animated.View> */}
-      <View style={{ position: 'absolute', bottom: 0, alignSelf: "end" }}>
+      <View style={{ position: 'absolute', bottom: 0, alignSelf: 'end' }}>
         <Navbar />
       </View>
-    </Container >
-  )
-}
+    </Container>
+  );
+};
 
 const DATA = ['Popular', 'Hot Today', 'Near by', 'Favorite', 'Best rate', 'Local'];
 
@@ -145,7 +175,7 @@ const themedStyles = StyleService.create({
   userInput: {
     flex: 1,
     borderRadius: 16,
-    marginTop: 10
+    marginTop: 10,
   },
   passwordInput: {
     flex: 1,
@@ -169,5 +199,4 @@ const themedStyles = StyleService.create({
   },
 });
 
-
-export default Home
+export default Home;

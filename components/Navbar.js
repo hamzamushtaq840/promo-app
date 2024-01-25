@@ -1,52 +1,84 @@
 import { Icon, Layout, useTheme } from '@ui-kitten/components';
-import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
-import useLayout from '../hooks/useLayout';
 import { usePathname, useRouter } from 'expo-router';
+import React from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import useLayout from '../hooks/useLayout';
 
 const Navbar = ({ style }) => {
   const theme = useTheme();
-  const router = useRouter()
+  const router = useRouter();
   const { width } = useLayout();
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <Layout
       level="3"
-      style={[styles.tabView, { borderColor: theme['background-basic-color-10'], width: width, }, style]}>
-      <TouchableOpacity onPress={() => router.push('(Dashboard)/Home')} activeOpacity={0.7} style={styles.tab}>
+      style={[
+        styles.tabView,
+        { borderColor: theme['background-basic-color-10'], width: width },
+        style,
+      ]}>
+      <TouchableOpacity
+        onPress={() => router.push('(Dashboard)/Home')}
+        activeOpacity={0.7}
+        style={styles.tab}>
         <Icon
           pack="assets"
           name="home"
           style={[styles.icon, { tintColor: pathname === '/Home' && theme['color-primary-500'] }]}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push('(Dashboard)/Cart')} activeOpacity={0.7} style={styles.tab}>
+      <TouchableOpacity
+        onPress={() => router.push('(Dashboard)/Cart')}
+        activeOpacity={0.7}
+        style={styles.tab}>
         <Icon
           pack="assets"
           name="cart"
           style={[styles.icon, { tintColor: pathname === '/Cart' && theme['color-primary-500'] }]}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push('(Dashboard)/Favourite')} activeOpacity={0.7} style={styles.tab}>
+      <TouchableOpacity
+        onPress={() => router.push('(Dashboard)/Favourite')}
+        activeOpacity={0.7}
+        style={styles.tab}>
         <Icon
           pack="assets"
           name="heart"
-          style={[styles.icon, { tintColor: pathname === '/Favourite' && theme['color-primary-500'] }]}
+          style={[
+            styles.icon,
+            { tintColor: pathname === '/Favourite' && theme['color-primary-500'] },
+          ]}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push('(Dashboard)/FidelityCard')} activeOpacity={0.7} style={styles.tab}>
+      <TouchableOpacity
+        onPress={() => router.push('(Dashboard)/FidelityCard')}
+        activeOpacity={0.7}
+        style={styles.tab}>
         <Icon
           pack="assets"
           name="cards2"
-          style={[{ height: 20, width: 20 }, { tintColor: (pathname === '/NewCard' || pathname === '/FidelityCard') && theme['color-primary-500'] }]}
+          style={[
+            { height: 20, width: 20 },
+            {
+              tintColor:
+                (pathname === '/NewCard' || pathname === '/FidelityCard') &&
+                theme['color-primary-500'],
+            },
+          ]}
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push('(Dashboard)/Profile')} activeOpacity={0.7} style={styles.tab}>
+      <TouchableOpacity
+        onPress={() => router.push('(Dashboard)/Profile')}
+        activeOpacity={0.7}
+        style={styles.tab}>
         <Icon
           pack="assets"
           name="profile"
-          style={[styles.icon, { tintColor: pathname === '/Profile' && theme['color-primary-500'] }]}
+          style={[
+            styles.icon,
+            { tintColor: pathname === '/Profile' && theme['color-primary-500'] },
+          ]}
         />
       </TouchableOpacity>
     </Layout>

@@ -11,7 +11,6 @@ import Animated, {
   useDerivedValue,
 } from 'react-native-reanimated';
 
-
 function Dots({ data, translationX }) {
   const theme = useTheme();
   const { width } = useLayout();
@@ -23,7 +22,7 @@ function Dots({ data, translationX }) {
           return interpolateColor(
             translationX.value,
             [(i - 1) * width, i * width, (i + 1) * width],
-            [theme['color-basic-400'], theme['color-basic-1100'], theme['color-basic-400']],
+            [theme['color-basic-400'], theme['color-basic-1100'], theme['color-basic-400']]
           );
         });
 
@@ -32,7 +31,7 @@ function Dots({ data, translationX }) {
             translationX.value,
             [(i - 1) * width, i * width, (i + 1) * width],
             [6, 30, 6],
-            Extrapolate.CLAMP,
+            Extrapolate.CLAMP
           );
         });
 

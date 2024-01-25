@@ -19,11 +19,11 @@ import { db } from '../../utlils/firebase';
 const SingleCategory = () => {
   const categoryName = 'Food';
   // const currentDate = Timestamp.now();
-  const router = useRouter()
+  const router = useRouter();
   const { width } = useLayout();
   const params = useLocalSearchParams();
-  const data = JSON.parse(params.category)
-  const categoryLanguage = i18n.locale
+  const data = JSON.parse(params.category);
+  const categoryLanguage = i18n.locale;
 
   const activePromo = useQuery({
     queryKey: ['activePromo', categoryName],
@@ -32,7 +32,7 @@ const SingleCategory = () => {
         const promoQuery = query(
           collectionGroup(db, 'promo'),
           where('category', '==', categoryName),
-          where('isActive', '==', true),
+          where('isActive', '==', true)
         );
 
         const promoSnapshot = await getDocs(promoQuery);
@@ -56,62 +56,89 @@ const SingleCategory = () => {
         throw new Error('Error fetching active promos');
       }
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error fetching active promos:', error);
     },
   });
 
   const renderProduct = React.useCallback(({ item }) => {
-    return <ProductItem onPress={() => {
-      router.push({ pathname: '(Dashboard)/SingleProductDetail', params: { item: JSON.stringify(item) } })
-
-    }} item={item} style={styles.itemProduct} />;
+    return (
+      <ProductItem
+        onPress={() => {
+          router.push({
+            pathname: '(Dashboard)/SingleProductDetail',
+            params: { item: JSON.stringify(item) },
+          });
+        }}
+        item={item}
+        style={styles.itemProduct}
+      />
+    );
   }, []);
 
-
   return (
-    <Container style={{
-      flex: 1,
-      paddingBottom: 0,
-    }}>
+    <Container
+      style={{
+        flex: 1,
+        paddingBottom: 0,
+      }}>
       <TopNavigation
         alignment="center"
         title={<Text>{data?.name[categoryLanguage]}</Text>}
-        accessoryRight={<NavigationAction marginHorizontal={6} height={20} width={16} icon="notifications" onPress={() => { console.log("notification"); }} />}
+        accessoryRight={
+          <NavigationAction
+            marginHorizontal={6}
+            height={20}
+            width={16}
+            icon="notifications"
+            onPress={() => {
+              console.log('notification');
+            }}
+          />
+        }
       />
       <Content contentContainerStyle={styles.content}>
-
         <VStack gap={12} mt={20}>
-          <View style={{ paddingHorizontal: 14, flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400' }}>{i18n.t('listWeek')}</Text>
-            <Text style={{ fontSize: 14, fontFamily: 'Roboto-Regular400', color: '#959597' }}>{i18n.t('seeAll')}</Text>
+          <View
+            style={{
+              paddingHorizontal: 14,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400' }}>
+              {i18n.t('listWeek')}
+            </Text>
+            <Text style={{ fontSize: 14, fontFamily: 'Roboto-Regular400', color: '#959597' }}>
+              {i18n.t('seeAll')}
+            </Text>
           </View>
           {/* {activePromo.isLoading &} */}
           {activePromo.isLoading && <Loader height={152} status={'primary'} center mt={10} />}
 
-          {<FlatList
-            data={activePromo?.data || []}
-            renderItem={renderProduct}
-            horizontal
-            scrollEventThrottle={16}
-            keyExtractor={(i, _index) => `${_index}`}
-            style={{ flexGrow: 0 }}
-            snapToInterval={(width - 104) + 8}
-            decelerationRate="fast"
-            showsHorizontalScrollIndicator={false}
-            bounces={false}
-            pagingEnabled={false}
-            contentContainerStyle={styles.contentProduct}
-          />}
+          {
+            <FlatList
+              data={activePromo?.data || []}
+              renderItem={renderProduct}
+              horizontal
+              scrollEventThrottle={16}
+              keyExtractor={(i, _index) => `${_index}`}
+              style={{ flexGrow: 0 }}
+              snapToInterval={width - 104 + 8}
+              decelerationRate="fast"
+              showsHorizontalScrollIndicator={false}
+              bounces={false}
+              pagingEnabled={false}
+              contentContainerStyle={styles.contentProduct}
+            />
+          }
         </VStack>
       </Content>
       <Navbar />
     </Container>
-  )
-}
+  );
+};
 
-export default SingleCategory
-
+export default SingleCategory;
 
 const styles = StyleSheet.create({
   tabBar: {
