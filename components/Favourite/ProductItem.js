@@ -33,7 +33,7 @@ const ProductItem = ({ item, onPress, style }) => {
       await queryClient.invalidateQueries({ queryKey: ['favourites'] });
 
       Toast.show({
-        type: 'error',
+        type: 's',
         position: 'bottom',
         text1: 'Removed from favourites',
       });

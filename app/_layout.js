@@ -1,19 +1,18 @@
 import * as eva from '@eva-design/eva';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
-import { Slot } from 'expo-router';
-import { StatusBar, StyleSheet, View } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import IconsPack from '../assets/icons/IconsPack';
-import { default as customMapping } from '../constants/mapping.json';
-import { default as customTheme } from '../constants/app-theme.json';
 import { useFonts } from 'expo-font';
-import { useCallback, useEffect } from 'react';
+import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import ToastProvider from '../context/toastContext';
-import { i18n } from '../translations';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect } from 'react';
+import { StatusBar, StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import IconsPack from '../assets/icons/IconsPack';
+import { default as customTheme } from '../constants/app-theme.json';
+import { default as customMapping } from '../constants/mapping.json';
+import { i18n } from '../translations';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -49,10 +48,8 @@ export default function Layout() {
         theme={{ ...eva.light, ...customTheme }}
         customMapping={{ ...eva.mapping, ...customMapping }}>
         <StatusBar barStyle={'dark-content'} />
-        <ToastProvider>
-          <Slot />
-          <Toast />
-        </ToastProvider>
+        <Slot />
+        <Toast />
       </ApplicationProvider>
     </SafeAreaProvider>
   );

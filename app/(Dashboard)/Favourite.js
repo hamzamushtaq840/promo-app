@@ -37,7 +37,7 @@ const Favourite = () => {
         // Fetching promos and adding parentId field and parentData
         for (const promoDoc of promoSnapshot.docs) {
           // Filter based on the 'id' field
-          if (favourites.includes(promoDoc.id)) {
+          if (favourites?.includes(promoDoc.id)) {
             const parentId = promoDoc.ref.parent.parent.id;
             const parentDoc = await getDoc(promoDoc.ref.parent.parent);
 

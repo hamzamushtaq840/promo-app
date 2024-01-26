@@ -6,6 +6,7 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import useUserData from '../../hooks/useUserData';
 import { i18n } from '../../translations';
 import { db } from '../../utlils/firebase';
+import Toast from 'react-native-toast-message';
 
 const ProductItem = ({ item, onPress, style }) => {
   const categoryLanguage = i18n.locale;
@@ -30,7 +31,7 @@ const ProductItem = ({ item, onPress, style }) => {
       await queryClient.invalidateQueries({ queryKey: ['bookings'] });
 
       Toast.show({
-        type: 'error',
+        type: 'success',
         position: 'bottom',
         text1: 'Removed from bookings',
       });

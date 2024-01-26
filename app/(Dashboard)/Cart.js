@@ -1,32 +1,20 @@
-import { Button, StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components';
-import React from 'react';
-import { Animated, FlatList, ScrollView, View } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import { StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components';
+import { useRouter } from 'expo-router';
+import { collectionGroup, getDoc, getDocs, query } from 'firebase/firestore';
+import React, { useState } from 'react';
+import { FlatList, View } from 'react-native';
 import ProductItem from '../../components/Cart/ProductItem';
 import Container from '../../components/Generic/Container';
-import HStack from '../../components/Generic/HStack';
+import Loader from '../../components/Generic/Loader';
 import NavigationAction from '../../components/Generic/NavigationAction';
 import Text from '../../components/Generic/Text';
-import VStack from '../../components/Generic/VStack';
 import Navbar from '../../components/Navbar';
-import useLayout from '../../hooks/useLayout';
-import { useRouter } from 'expo-router';
-import useUserData from '../../hooks/useUserData';
-import { db } from '../../utlils/firebase';
-import {
-  FieldPath,
-  collection,
-  collectionGroup,
-  doc,
-  documentId,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from 'firebase/firestore';
-import { useQuery } from '@tanstack/react-query';
 import { FONTS } from '../../constants/theme';
+import useLayout from '../../hooks/useLayout';
+import useUserData from '../../hooks/useUserData';
 import { i18n } from '../../translations';
-import Loader from '../../components/Generic/Loader';
+import { db } from '../../utlils/firebase';
 
 const Home = () => {
   const { width, height } = useLayout();
@@ -49,7 +37,7 @@ const Home = () => {
         // Fetching promos and adding parentId field and parentData
         for (const promoDoc of promoSnapshot.docs) {
           // Filter based on the 'id' field
-          if (favourites.includes(promoDoc.id)) {
+          if (favourites?.includes(promoDoc.id)) {
             const parentId = promoDoc.ref.parent.parent.id;
             const parentDoc = await getDoc(promoDoc.ref.parent.parent);
 
@@ -116,41 +104,6 @@ const Home = () => {
           )}
         </View>
       )}
-
-      {/* <Animated.View style={[{ position: 'absolute', bottom: 64, width: width, paddingHorizontal: 28, paddingVertical: 20, height: 240 }]} >
-        <Text style={{ fontFamily: 'Roboto-Bold700', fontSize: 14, color: '#959597', lineHeight: 20 }}>PAYMENT DETAILS</Text>
-
-        <VStack style={{ marginTop: 16 }} gap={8}>
-          <HStack >
-            <Text>Subtotal</Text>
-            <Text>$ 175.00</Text>
-          </HStack>
-          <HStack >
-            <Text>Tax</Text>
-            <Text>$ 1.75</Text>
-          </HStack>
-          <HStack style={{ marginTop: 8 }}>
-            <Text stle={{ fontWeight: 'bold', fontSize: 14 }}>Total</Text>
-            <Text>$ 176.75</Text>
-          </HStack>
-        </VStack>
-
-
-        <HStack style={{ marginTop: 40, alignItems: 'flex-end', flex: 1 }} gap={4}>
-          <Button
-            status={'apple'}
-            // size={'small'}
-            style={{ width: '50%', color: '#959597', backgroundColor: '#FAFAFA', borderColor: '#FAFAFA', alignSelf: 'center' }}
-            children={"Add More"}
-          />
-          <Button
-            status={'primary'}
-            // size={'small'}
-            style={{ width: '50%', textColor: 'white', alignSelf: 'center', fontFamily: 'Roboto-Bold700' }}
-            children={'Book Now'}
-          />
-        </HStack>
-      </Animated.View> */}
       <View style={{ position: 'absolute', bottom: 0, alignSelf: 'end' }}>
         <Navbar />
       </View>

@@ -153,15 +153,23 @@ const Home = () => {
         alignment="center"
         title={<Text>{i18n.t('home')}</Text>}
         accessoryRight={
-          <NavigationAction
-            marginHorizontal={6}
-            height={20}
-            width={16}
-            icon="notifications"
+          <TouchableOpacity
             onPress={() => {
-              console.log('notification');
+              router.push('/Notification');
             }}
-          />
+            style={{ position: 'relative' }}>
+            <NavigationAction marginHorizontal={6} height={20} width={16} icon="notifications" />
+            <View
+              style={{
+                width: 8,
+                height: 8,
+                backgroundColor: 'red',
+                position: 'absolute',
+                top: 0,
+                right: 4,
+                borderRadius: 30,
+              }}></View>
+          </TouchableOpacity>
         }
       />
       <Content contentContainerStyle={styles.content}>

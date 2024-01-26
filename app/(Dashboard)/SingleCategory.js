@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { TopNavigation } from '@ui-kitten/components';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { collectionGroup, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collectionGroup, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import Container from '../../components/Generic/Container';
@@ -61,10 +61,27 @@ const SingleCategory = () => {
     },
   });
 
+  const handleCounter = async val => {
+    const promoDocRef = doc(db, 'web-users', val.parentId, 'promo', val.id);
+
+    try {
+      const promoDocSnapshot = await getDoc(promoDocRef);
+      const currentNoOfClicks = promoDocSnapshot.data().noOfClicks || 0;
+
+      // Increment the noOfClicks property and update the document
+      await updateDoc(promoDocRef, {
+        noOfClicks: currentNoOfClicks + 1,
+      });
+    } catch (error) {
+      console.error('Error incrementing noOfClicks:', error);
+    }
+  };
+
   const renderProduct = React.useCallback(({ item }) => {
     return (
       <ProductItem
         onPress={() => {
+          handleCounter(item);
           router.push({
             pathname: '(Dashboard)/SingleProductDetail',
             params: { item: JSON.stringify(item) },
@@ -82,21 +99,7 @@ const SingleCategory = () => {
         flex: 1,
         paddingBottom: 0,
       }}>
-      <TopNavigation
-        alignment="center"
-        title={<Text>{data?.name[categoryLanguage]}</Text>}
-        accessoryRight={
-          <NavigationAction
-            marginHorizontal={6}
-            height={20}
-            width={16}
-            icon="notifications"
-            onPress={() => {
-              console.log('notification');
-            }}
-          />
-        }
-      />
+      <TopNavigation alignment="center" title={<Text>{data?.name[categoryLanguage]}</Text>} />
       <Content contentContainerStyle={styles.content}>
         <VStack gap={12} mt={20}>
           <View
@@ -114,7 +117,6 @@ const SingleCategory = () => {
           </View>
           {/* {activePromo.isLoading &} */}
           {activePromo.isLoading && <Loader height={152} status={'primary'} center mt={10} />}
-
           {
             <FlatList
               data={activePromo?.data || []}

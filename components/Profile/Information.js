@@ -28,7 +28,7 @@ const Information = memo(() => {
   const data = ['English', 'French'];
   const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
   const [displayValue, setDisplayValue] = React.useState(data[0]);
-  const [fullName, setFullName] = React.useState('');
+  const [fullName, setFullName] = React.useState(userData.name);
   const [isLoading, setLoading] = React.useState(false);
   const queryClient = useQueryClient();
 
@@ -84,7 +84,7 @@ const Information = memo(() => {
           <Text style={{ fontSize: 14, color: '#959597', lineHeight: 24 }}>{i18n.t('name')}</Text>
           <Input
             placeholder={i18n.t('name')}
-            value={fullName !== '' ? fullName : userData.name}
+            value={fullName}
             onChangeText={text => setFullName(text)}
             accessoryLeft={
               <Image

@@ -7,9 +7,12 @@ export default function InputField({
   contaynerStyle,
   inputStyle,
   placeholder,
+  keyboardType,
   icon,
   secureTextEntry,
   title,
+  multiline = false,
+  numberOfLines,
   onChangeText,
   value,
   inputStyles,
@@ -44,9 +47,12 @@ export default function InputField({
         <TextInput
           style={{ paddingRight: 20, width: '100%', ...FONTS['400'] }}
           placeholder={placeholder}
+          multiline={multiline}
+          numberOfLines={numberOfLines}
           secureTextEntry={secureTextEntry}
           onChangeText={onChangeText}
           defaultValue={value}
+          keyboardType={keyboardType}
         />
       </View>
       {icon && icon}

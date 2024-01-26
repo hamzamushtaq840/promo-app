@@ -38,6 +38,8 @@ const NewCard = () => {
   };
 
   const handleBarCodeScanned = async ({ type, data }) => {
+    // "type": 1 for barcode
+    //"type": 256 for qr code
     if (shouldScan) {
       setData(data);
     }
@@ -285,7 +287,7 @@ const NewCard = () => {
                 setData(null);
               }}
               source={Images.fidelity.rescan}
-              style={{ width: 77, height: 24, marginBottom: 64 }}
+              style={{ width: 77, height: 24, marginBottom: 20 }}
             />
           </View>
         )}

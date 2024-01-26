@@ -1,17 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery } from '@tanstack/react-query';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, query, where } from 'firebase/firestore';
 import React, { createContext, useEffect, useState } from 'react';
 import { db } from '../utlils/firebase';
 
 const UserContext = createContext({});
 
 const UserProvider = ({ children }) => {
-  const [address, setAddress] = useState("")
-  const [language, setLanguage] = useState("")
-  const [location, setLocation] = useState({})
-  const [restaurent, setRestaurents] = useState([])
+  const [address, setAddress] = useState('');
+  const [language, setLanguage] = useState('');
+  const [location, setLocation] = useState({});
+  const [restaurent, setRestaurents] = useState([]);
   const [data, setData] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   const getUserData = useQuery({
     queryKey: ['userData'],
@@ -37,10 +38,10 @@ const UserProvider = ({ children }) => {
         throw new Error(error.message);
       }
     },
-    onSuccess: (data) => {
-      return data
+    onSuccess: data => {
+      return data;
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error fetching user data:', error);
     },
   });
@@ -49,20 +50,24 @@ const UserProvider = ({ children }) => {
     const fetchData = async () => {
       try {
         const userId = await AsyncStorage.getItem('userId');
-        const docRef = doc(db, 'users', userId);
+        const docRef = query(collection(db, 'notifications'), where('userId', '==', userId));
 
-        const unsubscribe = onSnapshot(docRef, (doc) => {
-          if (doc.exists()) {
-            const userData = doc.data();
-            const notifications = userData?.notifications;
-            console.log('Notifications changed ', notifications);
-            // Do something with the updated notifications array
-          } else {
-            console.log('Document does not exist');
-          }
+        const unsubscribe = onSnapshot(docRef, snapshot => {
+          snapshot.docChanges().forEach(change => {
+            const doc = change.doc;
+
+            if (doc && doc.exists()) {
+              const userData = doc.data();
+              const notifications = userData?.allNotifications;
+              setNotifications(notifications);
+              // console.log('Notifications changed ', notifications);
+              // Do something with the updated notifications array
+            } else {
+              console.log('Document does not exist');
+            }
+          });
         });
 
-        // Remember to unsubscribe from your realtime listener on unmount or you will create a memory leak
         return () => unsubscribe();
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -73,11 +78,11 @@ const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ userData: getUserData?.data, language, setLanguage }}>
+    <UserContext.Provider
+      value={{ userData: getUserData?.data, language, setLanguage, notifications }}>
       {children}
     </UserContext.Provider>
   );
 };
 
 export { UserContext, UserProvider };
-

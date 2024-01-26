@@ -17,6 +17,8 @@ import useLayout from '../../hooks/useLayout';
 import useUserData from '../../hooks/useUserData';
 import { db } from '../../utlils/firebase';
 import { i18n } from '../../translations';
+import Toast from 'react-native-toast-message';
+import BookingModal from '../../components/Cart/BookingModal';
 
 const SVGComponent = props => (
   <Svg
@@ -46,6 +48,7 @@ const SingleProductDetail = () => {
   const [loading2, setLoading2] = useState(false);
   const { userData } = useUserData();
   const queryClient = useQueryClient();
+  const [modal, setModal] = useState(false);
 
   const handlePress = () => {
     if (maximize === false) {
@@ -66,7 +69,6 @@ const SingleProductDetail = () => {
   };
 
   const addPromoToUserFavorites = async () => {
-    console.log('i ran');
     try {
       setLoading(true); // Set loading to true when the operation starts
 
@@ -80,7 +82,7 @@ const SingleProductDetail = () => {
 
       await queryClient.invalidateQueries({ queryKey: ['userData'] });
       Toast.show({
-        type: 'error',
+        type: 'success',
         position: 'bottom',
         text1: 'Added to favourites',
       });
@@ -108,7 +110,7 @@ const SingleProductDetail = () => {
       await queryClient.invalidateQueries({ queryKey: ['userData'] });
 
       Toast.show({
-        type: 'error',
+        type: 'success',
         position: 'bottom',
         text1: 'Removed from favorites',
       });
@@ -135,7 +137,7 @@ const SingleProductDetail = () => {
       await queryClient.invalidateQueries({ queryKey: ['userData'] });
 
       Toast.show({
-        type: 'error',
+        type: 'success',
         position: 'bottom',
         text1: 'Booking added successfully',
       });
@@ -239,12 +241,12 @@ const SingleProductDetail = () => {
 
           <VStack style={{ justifyContent: 'space-between' }}>
             <TouchableOpacity onPress={removePromoFromUserFavorites}>
-              {userData.favourites.includes(item.id) && !loading && (
+              {userData?.favourites?.includes(item.id) && !loading && (
                 <Icon name="heartFilled" style={{ width: 24, height: 24 }} />
               )}
             </TouchableOpacity>
             <TouchableOpacity onPress={addPromoToUserFavorites}>
-              {userData.favourites.includes(item.id) === false && !loading && (
+              {userData?.favourites?.includes(item.id) === false && !loading && (
                 <Icon name="heart" style={{ width: 24, height: 24 }} />
               )}
             </TouchableOpacity>
@@ -299,7 +301,9 @@ const SingleProductDetail = () => {
               status={'primary'}
               size={'small'}
               disabled={userData.bookings.includes(item.id) ? true : false}
-              onPress={addBookingToUserBookings}
+              onPress={() => {
+                setModal(true);
+              }}
               style={{ width: '182', textColor: 'white', alignSelf: 'center' }}
               children={
                 loading2 ? (
@@ -314,6 +318,7 @@ const SingleProductDetail = () => {
           )}
         </HStack>
       </Animated.View>
+      {modal && <BookingModal setModalVisible={setModal} />}
     </Container>
   );
 };
