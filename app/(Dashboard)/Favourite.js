@@ -4,17 +4,17 @@ import { useRouter } from 'expo-router';
 import { collectionGroup, getDoc, getDocs, query } from 'firebase/firestore';
 import { default as React } from 'react';
 import { FlatList, View } from 'react-native';
+import ProductItem from '../../components/Favourite/ProductItem';
 import Container from '../../components/Generic/Container';
+import Loader from '../../components/Generic/Loader';
 import NavigationAction from '../../components/Generic/NavigationAction';
 import Text from '../../components/Generic/Text';
 import Navbar from '../../components/Navbar';
 import { FONTS } from '../../constants/theme';
 import useLayout from '../../hooks/useLayout';
 import useUserData from '../../hooks/useUserData';
-import { db } from '../../utlils/firebase';
-import ProductItem from '../../components/Favourite/ProductItem';
 import { i18n } from '../../translations';
-import Loader from '../../components/Generic/Loader';
+import { db } from '../../utlils/firebase';
 
 const Favourite = () => {
   const { width, height } = useLayout();

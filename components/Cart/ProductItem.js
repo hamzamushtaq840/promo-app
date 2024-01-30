@@ -1,12 +1,12 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { Icon, Spinner, Text, useTheme } from '@ui-kitten/components';
-import { arrayRemove, doc, updateDoc } from 'firebase/firestore';
+import { Icon, Spinner, Text } from '@ui-kitten/components';
+import { arrayRemove, doc, getDoc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import useUserData from '../../hooks/useUserData';
 import { i18n } from '../../translations';
 import { db } from '../../utlils/firebase';
-import Toast from 'react-native-toast-message';
 
 const ProductItem = ({ item, onPress, style }) => {
   const categoryLanguage = i18n.locale;
@@ -16,32 +16,37 @@ const ProductItem = ({ item, onPress, style }) => {
 
   const removePromoFromUserBookings = async () => {
     try {
-      setLoading(true); // Set loading to true when the operation starts
-
-      // Get a reference to the user document
+      setLoading(true);
       const userRef = doc(db, 'users', userData.userId);
-
-      // Update the user document to remove the promoId from the favorites array
       await updateDoc(userRef, {
         bookings: arrayRemove(item.id),
       });
-
-      // Invalidate the user data query to reflect the changes
+      const webUsersRef = doc(db, 'web-users', item.parentId);
+      const promoDocRef = doc(webUsersRef, 'promo', item.id);
+      const promoDocSnapshot = await getDoc(promoDocRef);
+      const currentBookings = promoDocSnapshot.data().bookings || [];
+      const updatedBookings = currentBookings.filter(booking => booking.userId !== userData.userId);
+      await updateDoc(promoDocRef, {
+        bookings: updatedBookings,
+      });
       await queryClient.invalidateQueries({ queryKey: ['userData'] });
       await queryClient.invalidateQueries({ queryKey: ['bookings'] });
-
       Toast.show({
         type: 'success',
         position: 'bottom',
-        text1: 'Removed from bookings',
+        text1: 'Booking removed successfully',
       });
     } catch (error) {
-      console.error('Error removing promo from bookings:', error.message);
+      console.error('Error removing booking:', error.message);
+      Toast.show({
+        type: 'error',
+        position: 'bottom',
+        text1: 'Error removing booking',
+      });
     } finally {
-      setLoading(false); // Set loading to false regardless of success or failure
+      setLoading(false);
     }
   };
-
   return (
     <TouchableOpacity activeOpacity={0.7} style={[styles.container, style]} onPress={onPress}>
       <Image source={{ uri: item?.photos[0] }} style={styles.image} />

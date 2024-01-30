@@ -1,7 +1,7 @@
 import { Button } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { Image, Keyboard, Text, TouchableOpacity, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
@@ -70,10 +70,14 @@ const Register = () => {
           email: email,
           bookings: [],
           favourites: [],
-          permissions: [],
+          fidelity: [],
+        });
+        await addDoc(collection(db, 'notifications'), {
+          userId: user.uid,
+          allNotifications: [],
         });
         Toast.show({
-          type: 'error',
+          type: 'success',
           position: 'bottom',
           text1: 'Account created',
         });

@@ -7,7 +7,6 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import Container from '../../components/Generic/Container';
 import Content from '../../components/Generic/Content';
 import Loader from '../../components/Generic/Loader';
-import NavigationAction from '../../components/Generic/NavigationAction';
 import Text from '../../components/Generic/Text';
 import VStack from '../../components/Generic/VStack';
 import ProductItem from '../../components/Home/ProductItem';
@@ -37,19 +36,13 @@ const SingleCategory = () => {
 
         const promoSnapshot = await getDocs(promoQuery);
         const promos = [];
-
-        // Fetching promos and adding parentId field and parentData
         for (const promoDoc of promoSnapshot.docs) {
           const parentId = promoDoc.ref.parent.parent.id;
           const parentDoc = await getDoc(promoDoc.ref.parent.parent);
-
-          // Include additional data from the parent document
           const parentData = parentDoc.exists() ? parentDoc.data() : null;
-
           const promoData = { id: promoDoc.id, parentId, parentData, ...promoDoc.data() };
           promos.push(promoData);
         }
-
         return promos || [];
       } catch (error) {
         console.error('Error fetching active promos:', error);
@@ -81,7 +74,8 @@ const SingleCategory = () => {
     return (
       <ProductItem
         onPress={() => {
-          handleCounter(item);
+          // only do if clickTracker is true
+          if (item?.clickTracker) handleCounter(item);
           router.push({
             pathname: '(Dashboard)/SingleProductDetail',
             params: { item: JSON.stringify(item) },

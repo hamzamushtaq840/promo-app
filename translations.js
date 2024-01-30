@@ -33,7 +33,7 @@ export const translations = {
     viewAddresses: 'View All Addresses',
     viewLess: 'View Less',
     sendEmail: 'Send Email',
-    persons: 'No of persons',
+    persons: 'No of persons*',
     bookingDetails: 'Booking Details',
     time: 'Time : ',
     date: 'Date : ',

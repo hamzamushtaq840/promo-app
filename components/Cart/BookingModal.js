@@ -1,37 +1,42 @@
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useQueryClient } from '@tanstack/react-query';
+import { Button } from '@ui-kitten/components';
+import { arrayUnion, collection, doc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import {
   Dimensions,
+  Keyboard,
   Modal,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import useUserData from '../../hooks/useUserData';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
-import { Button } from '@ui-kitten/components';
-import VStack from '../Generic/VStack';
-import { FONTS } from '../../constants/theme';
-import HStack from '../Generic/HStack';
-import InputField from '../InputField';
-import { i18n } from '../../translations';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import Email from '../../svg/Email';
+import Toast from 'react-native-toast-message';
+import { FONTS } from '../../constants/theme';
+import useUserData from '../../hooks/useUserData';
 import Person from '../../svg/Person';
+import { i18n } from '../../translations';
+import { db } from '../../utlils/firebase';
+import { dateConverter } from '../../utlils/timeConverter';
+import HStack from '../Generic/HStack';
+import VStack from '../Generic/VStack';
+import InputField from '../InputField';
+import Loader from '../Generic/Loader';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-function BookingModal({ setModalVisible }) {
+function BookingModal({ setModalVisible, item }) {
   const [loading, setLoading] = useState(false);
-  const { userData } = useUserData();
   const queryClient = useQueryClient();
   const [date, setDate] = useState(new Date());
+  const [date2, setDate2] = useState(null);
   const [time, setTime] = useState(new Date());
-  const [persons, setPersons] = useState(1);
+  const [time2, setTime2] = useState(null);
+  const [persons, setPersons] = useState('');
+  const { userData } = useUserData();
   const [bookingDetails, setBookingDetails] = useState('');
   const [showDateModal, setShowDateModal] = useState(false);
   const [showTimeModal, setShowTimeModal] = useState(false);
@@ -40,36 +45,54 @@ function BookingModal({ setModalVisible }) {
     setShowDateModal(false);
     const currentDate = selectedDate || date;
     setDate(currentDate);
+    setDate2(currentDate);
   };
 
   const handleTimeChange = (event, selectedTime) => {
     setShowTimeModal(false);
     const currentTime = selectedTime || time;
     setTime(currentTime);
+    setTime2(currentTime);
   };
 
   const handleSubmit = async () => {
-    if (!bookingDetails) {
+    if (!date2 || !time2 || !persons) {
+      Keyboard.dismiss();
       Toast.show({
         type: 'error',
         position: 'bottom',
-        text1: 'Please enter booking details',
+        text1: 'Please fill in all the details',
       });
     } else {
       try {
         setLoading(true);
-        const docRef = doc(db, 'users', userData.userId);
-        await updateDoc(docRef, {
-          bookingDetails,
-          date,
-          time,
-          persons,
+        const userRef = doc(db, 'users', userData.userId);
+
+        await updateDoc(userRef, {
+          bookings: arrayUnion(item.id),
         });
+
+        const webUsersRef = doc(db, 'web-users', item.parentId);
+        const promoDocRef = doc(webUsersRef, 'promo', item.id);
+
+        // Update the 'bookings' array inside the 'promo' document
+        await updateDoc(promoDocRef, {
+          bookings: arrayUnion({
+            userId: userData.userId,
+            date,
+            time,
+            persons,
+            bookingDetails,
+            bookedTime: new Date(),
+          }),
+        });
+
         await queryClient.invalidateQueries({ queryKey: ['userData'] });
+        setModalVisible(false);
         Toast.show({
-          type: 'error',
+          type: 'success',
           position: 'bottom',
-          text1: 'Booking Details Updated',
+          text1: 'Booking Added Successfully',
         });
       } catch (error) {
         console.log(error);
@@ -94,8 +117,8 @@ function BookingModal({ setModalVisible }) {
               </Text>
               <HStack itemsCenter ph={20} style={{ width: windowWidth * 0.9 }}>
                 <HStack itemsCenter>
-                  <Text style={{ fontSize: 15, ...FONTS['500'] }}>{date && i18n.t('date')}</Text>
-                  <Text>{date.toLocaleDateString()}</Text>
+                  <Text style={{ fontSize: 15, ...FONTS['500'] }}>{i18n.t('date')}</Text>
+                  <Text>{date2 ? date.toLocaleDateString() : ''}</Text>
                 </HStack>
                 <TouchableOpacity
                   onPress={() => {
@@ -106,12 +129,18 @@ function BookingModal({ setModalVisible }) {
                   </View>
                 </TouchableOpacity>
               </HStack>
-              {showDateModal && <RNDateTimePicker onChange={handleDateChange} value={date} />}
+              {showDateModal && (
+                <RNDateTimePicker
+                  maximumDate={new Date(dateConverter(item?.dateTo).inputFormat)}
+                  onChange={handleDateChange}
+                  value={date}
+                />
+              )}
               {/* {showDateModal && <RNDateTimePicker maximumDate={new Date(2030, 10, 20)}  onChange={handleDateChange} value={date} />} */}
               <HStack itemsCenter ph={20} style={{ width: windowWidth * 0.9 }}>
                 <HStack itemsCenter>
-                  <Text style={{ fontSize: 15, ...FONTS['500'] }}>{time && i18n.t('time')}</Text>
-                  <Text>{time.toLocaleTimeString()}</Text>
+                  <Text style={{ fontSize: 15, ...FONTS['500'] }}>{i18n.t('time')}</Text>
+                  <Text>{time2 ? time2.toLocaleTimeString() : ''}</Text>
                 </HStack>
                 <TouchableOpacity
                   onPress={() => {
@@ -157,11 +186,9 @@ function BookingModal({ setModalVisible }) {
                   paddingHorizontal: 0,
                   paddingVertical: 0,
                 }}
-                onPress={() => {
-                  console.log('post data');
-                }}>
-                {i18n.t('confirm')}
-              </Button>
+                children={loading ? <Loader /> : i18n.t('confirm')}
+                onPress={handleSubmit}
+              />
             </VStack>
           </View>
         </View>
@@ -178,9 +205,10 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 20,
   },
   modalContainer: {
     width: windowWidth * 0.9,

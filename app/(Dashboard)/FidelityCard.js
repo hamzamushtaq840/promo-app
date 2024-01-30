@@ -1,16 +1,22 @@
-import { Button, StyleService, TopNavigation, useStyleSheet, Text } from '@ui-kitten/components';
+import { StyleService, Text, TopNavigation, useStyleSheet } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Image } from 'react-native';
+import { View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import AddCard from '../../components/Fidelity/AddCard';
+import AllFidelityCards from '../../components/Fidelity/AllFidelityCards';
+import NoCard from '../../components/Fidelity/NoCard';
 import Container from '../../components/Generic/Container';
-import { Images } from './../../assets/images';
-import Content from './../../components/Generic/Content';
-import NavigationAction from './../../components/Generic/NavigationAction';
 import Navbar from '../../components/Navbar';
+import useUserData from '../../hooks/useUserData';
+import Add from '../../svg/Add';
+import NavigationAction from './../../components/Generic/NavigationAction';
 
 const FidelityCard = () => {
   const styles = useStyleSheet(themedStyles);
   const router = useRouter();
+  const { userData } = useUserData();
+  const [modal, setModal] = React.useState(false);
 
   return (
     <Container
@@ -31,37 +37,17 @@ const FidelityCard = () => {
             }}
           />
         }
+        accessoryRight={
+          <View>
+            <TouchableOpacity onPress={() => setModal(true)}>
+              <Add />
+            </TouchableOpacity>
+          </View>
+        }
       />
-      <Content contentContainerStyle={styles.content}>
-        <Image
-          source={Images.fidelity.card}
-          style={{ width: 200, height: 116, marginBottom: 64 }}
-        />
-        <Text style={{ fontSize: 22, fontFamily: 'Roboto-Medium500', marginBottom: 16 }}>
-          Don’t have any card
-        </Text>
-        <Text
-          style={{
-            fontSize: 16,
-            fontFamily: 'Roboto-Regular400',
-            marginBottom: 16,
-            textAlign: 'center',
-            color: '#959597',
-            width: 300,
-          }}>
-          It’s seems like you don't add any cards. Add card easily in few steps!
-        </Text>
-        <Button
-          status={'primary'}
-          // size={'small'}
-          textFontFamily={'Roboto-Bold500'}
-          style={{ width: '50%', textColor: 'white', alignSelf: 'center', marginTop: 80 }}
-          children={'Add New Card'}
-          onPress={() => {
-            router.push('/NewCard');
-          }}
-        />
-      </Content>
+      {userData?.fidelity.length === 0 && <NoCard setModal={setModal} />}
+      {userData?.fidelity.length > 0 && <AllFidelityCards setModal={setModal} />}
+      {modal && <AddCard setModal={setModal} />}
       <Navbar />
     </Container>
   );

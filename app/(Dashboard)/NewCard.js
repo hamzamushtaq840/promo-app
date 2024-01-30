@@ -1,4 +1,4 @@
-import { Button, Input, TopNavigation, Text } from '@ui-kitten/components';
+import { Button, Input, Text, TopNavigation } from '@ui-kitten/components';
 import { BlurView } from 'expo-blur';
 import { Camera } from 'expo-camera';
 import { useRouter } from 'expo-router';
@@ -9,9 +9,9 @@ import { Images } from '../../assets/images';
 import Container from '../../components/Generic/Container';
 import HStack from '../../components/Generic/HStack';
 import VStack from '../../components/Generic/VStack';
+import Navbar from '../../components/Navbar';
 import Content from './../../components/Generic/Content';
 import NavigationAction from './../../components/Generic/NavigationAction';
-import Navbar from '../../components/Navbar';
 
 const NewCard = () => {
   const [hasPermission, setHasPermission] = useState('');

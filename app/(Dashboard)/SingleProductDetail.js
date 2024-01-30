@@ -5,6 +5,8 @@ import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import React, { useRef, useState } from 'react';
 import { Animated, ScrollView, TouchableOpacity, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import Toast from 'react-native-toast-message';
+import BookingModal from '../../components/Cart/BookingModal';
 import Container from '../../components/Generic/Container';
 import Content from '../../components/Generic/Content';
 import HStack from '../../components/Generic/HStack';
@@ -15,10 +17,9 @@ import VStack from '../../components/Generic/VStack';
 import ImageSlider from '../../components/Home/ImageSlider';
 import useLayout from '../../hooks/useLayout';
 import useUserData from '../../hooks/useUserData';
-import { db } from '../../utlils/firebase';
 import { i18n } from '../../translations';
-import Toast from 'react-native-toast-message';
-import BookingModal from '../../components/Cart/BookingModal';
+import { db } from '../../utlils/firebase';
+import { dateConverter } from '../../utlils/timeConverter';
 
 const SVGComponent = props => (
   <Svg
@@ -209,9 +210,12 @@ const SingleProductDetail = () => {
                 <Text>{item.webLink}</Text>
               </HStack>
             )}
-            <HStack itemsCenter justify="flex-start" gap={8}>
+            <HStack itemsCenter justify="flex-start" pl={2} gap={8}>
               <Icon name="calendar" style={{ width: 12, height: 12 }} color="red" />
-              <Text>{new Date(item.dateFrom._seconds * 1000).toUTCString()} - 30.06.2023</Text>
+              <Text>
+                {dateConverter(item.dateTo).customFormat} -
+                {dateConverter(item.dateFrom).customFormat}
+              </Text>
             </HStack>
             {item.parentData.companyAddresses.map((address, index) => {
               return (
@@ -318,7 +322,7 @@ const SingleProductDetail = () => {
           )}
         </HStack>
       </Animated.View>
-      {modal && <BookingModal setModalVisible={setModal} />}
+      {modal && <BookingModal item={item} setModalVisible={setModal} />}
     </Container>
   );
 };

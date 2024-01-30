@@ -8,6 +8,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import React, { memo, useEffect } from 'react';
 import { Image, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { Icons } from '../../assets/icons';
 import Container from '../../components/Generic/Container';
 import Loader from '../../components/Generic/Loader';
@@ -75,7 +76,7 @@ const Profile10 = memo(() => {
         });
         await queryClient.invalidateQueries({ queryKey: ['userData'] });
         Toast.show({
-          type: 'error',
+          type: 'success',
           position: 'bottom',
           text1: 'Image Updated',
         });

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
 import { collectionGroup, getDoc, getDocs, query } from 'firebase/firestore';
-import React, { useState } from 'react';
+import React from 'react';
 import { FlatList, View } from 'react-native';
 import ProductItem from '../../components/Cart/ProductItem';
 import Container from '../../components/Generic/Container';

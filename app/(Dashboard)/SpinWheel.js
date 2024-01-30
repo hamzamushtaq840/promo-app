@@ -1,10 +1,10 @@
 import { Button, TopNavigation } from '@ui-kitten/components';
-import React, { useState, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
-import Svg, { Path, G, Text as SvgText, Image } from 'react-native-svg';
-import NavigationAction from '../../components/Generic/NavigationAction';
-import Container from '../../components/Generic/Container';
 import { useRouter } from 'expo-router';
+import React, { useRef, useState } from 'react';
+import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
+import Svg, { G, Image, Path, Text as SvgText } from 'react-native-svg';
+import Container from '../../components/Generic/Container';
+import NavigationAction from '../../components/Generic/NavigationAction';
 
 const SpinWheel = () => {
   const spinValue = useRef(new Animated.Value(0)).current;
