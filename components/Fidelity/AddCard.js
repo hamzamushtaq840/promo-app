@@ -140,7 +140,6 @@ const AddCard = ({ setModal }) => {
       } finally {
         setLoading(false);
       }
-      console.log(postData);
     }
   };
 

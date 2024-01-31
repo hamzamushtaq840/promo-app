@@ -41,6 +41,10 @@ export const translations = {
     selectDate: 'Select Date',
     confirm: 'Confirm',
     remarks: 'Remarks',
+    flashDeals: 'List of flash deals',
+    endingSoon: 'Ending Soon promos',
+    randomPromos: 'Random Promos',
+    noPromo: 'No promos found',
   },
   fr: {
     welcome: 'Ravi de te revoir!',
@@ -82,6 +86,10 @@ export const translations = {
     selectDate: 'Sélectionner la date',
     confirm: 'Confirmer',
     remarks: 'Remarques',
+    flashDeals: 'Liste des offres éclair',
+    endingSoon: 'Promotions se terminant bientôt',
+    randomPromos: 'Promos aléatoires',
+    noPromo: 'Aucune promotion trouvée',
   },
 };
 

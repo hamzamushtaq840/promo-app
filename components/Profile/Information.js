@@ -128,7 +128,6 @@ const Information = memo(() => {
                   await AsyncStorage.setItem('lang', 'en');
                 }
                 if (data[index.row] == 'French') {
-                  console.log('i ran');
                   await AsyncStorage.setItem('lang', 'fr');
                   i18n.locale = 'fr';
                 }

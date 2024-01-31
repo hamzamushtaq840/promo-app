@@ -7,14 +7,16 @@ import { arrayRemove, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utlils/firebase';
 import { i18n } from '../../translations';
 import Toast from 'react-native-toast-message';
+import { useRouter } from 'expo-router';
 
-const ProductItem = ({ item, onPress, style }) => {
+const ProductItem = ({ item, style }) => {
   const theme = useTheme();
   const { name, rate, sales, min_amount, max_amount, image } = item;
   const categoryLanguage = i18n.locale;
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const { userData } = useUserData();
+  const router = useRouter();
 
   const removePromoFromUserFavorites = async () => {
     try {
@@ -33,7 +35,7 @@ const ProductItem = ({ item, onPress, style }) => {
       await queryClient.invalidateQueries({ queryKey: ['favourites'] });
 
       Toast.show({
-        type: 's',
+        type: 'success',
         position: 'bottom',
         text1: 'Removed from favourites',
       });
@@ -45,7 +47,15 @@ const ProductItem = ({ item, onPress, style }) => {
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.7} style={[styles.container, style]} onPress={onPress}>
+    <TouchableOpacity
+      onPress={() => {
+        router.push({
+          pathname: '(Dashboard)/SingleProductDetail',
+          params: { item: JSON.stringify(item) },
+        });
+      }}
+      activeOpacity={0.7}
+      style={[styles.container, style]}>
       <Image source={{ uri: item?.photos[0] }} style={styles.image} />
       <View style={styles.content}>
         <Text style={{ fontFamily: 'Roboto-Medium500' }}>

@@ -13,6 +13,7 @@ const UserProvider = ({ children }) => {
   const [restaurent, setRestaurents] = useState([]);
   const [data, setData] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [allPromos, setAllPromos] = useState([]);
 
   const getUserData = useQuery({
     queryKey: ['userData'],
@@ -60,7 +61,7 @@ const UserProvider = ({ children }) => {
               const userData = doc.data();
               const notifications = userData?.allNotifications;
               setNotifications(notifications);
-              // console.log('Notifications changed ', notifications);
+              console.log('Notifications changed ', notifications);
               // Do something with the updated notifications array
             } else {
               console.log('Document does not exist');
@@ -79,7 +80,14 @@ const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ userData: getUserData?.data, language, setLanguage, notifications }}>
+      value={{
+        userData: getUserData?.data,
+        language,
+        setLanguage,
+        notifications,
+        setAllPromos,
+        allPromos,
+      }}>
       {children}
     </UserContext.Provider>
   );

@@ -170,17 +170,6 @@ const SingleProductDetail = () => {
               }}
             />
           }
-          accessoryRight={
-            <NavigationAction
-              marginHorizontal={6}
-              height={16}
-              width={4}
-              icon="dots"
-              onPress={() => {
-                console.log('notification');
-              }}
-            />
-          }
         />
         <ImageSlider images={item?.photos} />
       </Content>
@@ -213,8 +202,8 @@ const SingleProductDetail = () => {
             <HStack itemsCenter justify="flex-start" pl={2} gap={8}>
               <Icon name="calendar" style={{ width: 12, height: 12 }} color="red" />
               <Text>
-                {dateConverter(item.dateTo).customFormat} -
-                {dateConverter(item.dateFrom).customFormat}
+                {dateConverter(item.startDate).customFormat} -
+                {dateConverter(item.endDate).customFormat}
               </Text>
             </HStack>
             {item.parentData.companyAddresses.map((address, index) => {

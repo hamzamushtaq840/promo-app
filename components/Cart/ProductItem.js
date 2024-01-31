@@ -7,12 +7,14 @@ import Toast from 'react-native-toast-message';
 import useUserData from '../../hooks/useUserData';
 import { i18n } from '../../translations';
 import { db } from '../../utlils/firebase';
+import { useRouter } from 'expo-router';
 
 const ProductItem = ({ item, onPress, style }) => {
   const categoryLanguage = i18n.locale;
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const { userData } = useUserData();
+  const router = useRouter();
 
   const removePromoFromUserBookings = async () => {
     try {
@@ -48,7 +50,15 @@ const ProductItem = ({ item, onPress, style }) => {
     }
   };
   return (
-    <TouchableOpacity activeOpacity={0.7} style={[styles.container, style]} onPress={onPress}>
+    <TouchableOpacity
+      activeOpacity={0.7}
+      style={[styles.container, style]}
+      onPress={() => {
+        router.push({
+          pathname: '(Dashboard)/SingleProductDetail',
+          params: { item: JSON.stringify(item) },
+        });
+      }}>
       <Image source={{ uri: item?.photos[0] }} style={styles.image} />
       <View style={styles.content}>
         <Text style={{ fontFamily: 'Roboto-Medium500' }}>

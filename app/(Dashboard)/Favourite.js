@@ -83,17 +83,6 @@ const Favourite = () => {
             }}
           />
         }
-        accessoryRight={
-          <NavigationAction
-            marginHorizontal={6}
-            height={20}
-            width={16}
-            icon="notifications"
-            onPress={() => {
-              console.log('notification');
-            }}
-          />
-        }
       />
       {favouritesQuery?.data?.length > 0 ? (
         <FlatList

@@ -160,7 +160,6 @@ const NewCard = () => {
               {!shouldScan && (
                 <View
                   onStartShouldSetResponder={() => {
-                    console.log('write');
                     setShouldScan(true);
                   }}
                   style={{

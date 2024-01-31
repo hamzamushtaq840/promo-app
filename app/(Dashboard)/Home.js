@@ -173,20 +173,7 @@ const Home = () => {
         }
       />
       <Content contentContainerStyle={styles.content}>
-        <VStack padder border={10}>
-          <Input
-            placeholder={i18n.t('search')}
-            accessoryLeft={
-              <Image
-                source={require('./../../assets/icons/search.png')}
-                marginHorizontal={10}
-                style={{ width: 10, height: 10 }}
-              />
-            }
-            style={styles.userInput}
-          />
-        </VStack>
-        <VStack mt={20}>
+        <VStack mt={10}>
           {images.isLoading === false && images?.data.length > 0 && (
             <Animated.FlatList
               data={images?.data}

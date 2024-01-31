@@ -131,7 +131,7 @@ function BookingModal({ setModalVisible, item }) {
               </HStack>
               {showDateModal && (
                 <RNDateTimePicker
-                  maximumDate={new Date(dateConverter(item?.dateTo).inputFormat)}
+                  maximumDate={new Date(dateConverter(item?.startDate).inputFormat)}
                   onChange={handleDateChange}
                   value={date}
                 />
