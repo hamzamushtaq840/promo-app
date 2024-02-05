@@ -9,6 +9,7 @@ import Content from '../Generic/Content';
 import NavigationAction from '../Generic/NavigationAction';
 import QRCode from 'react-native-qrcode-svg';
 import useUserData from '../../hooks/useUserData';
+import { i18n } from './../../translations';
 
 const AllFidelityCards = () => {
   const styles = useStyleSheet(themedStyles);
@@ -66,7 +67,7 @@ const AllFidelityCards = () => {
               paddingHorizontal: 16,
             }}>
             <Text style={{ alignSelf: 'center', color: 'black' }}>
-              {item.isQrCode ? 'QR Code' : 'Bar Code'}
+              {item.isQrCode ? i18n.t('qrCode') : i18n.t('barCode')}
             </Text>
           </View>
         </View>
@@ -97,7 +98,7 @@ const AllFidelityCards = () => {
             borderBottomWidth: 1,
             paddingVertical: 12,
           }}>
-          <Text style={{ alignSelf: 'center' }}>App Cards</Text>
+          <Text style={{ alignSelf: 'center' }}>{i18n.t('appCards')}</Text>
           {current === 'appCards' && (
             <View
               style={{
@@ -120,7 +121,7 @@ const AllFidelityCards = () => {
             borderBottomWidth: 1,
             paddingVertical: 12,
           }}>
-          <Text style={{ alignSelf: 'center' }}>3rd Party Cards</Text>
+          <Text style={{ alignSelf: 'center' }}> {i18n.t('thirdPartyCards')}</Text>
           {current === '3rdPartyCards' && (
             <View
               style={{

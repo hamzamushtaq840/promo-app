@@ -35,8 +35,8 @@ const Social14 = memo(() => {
         }
       />
       <FlatList
-        data={notifications}
-        // keyExtractor={keyExtractoUtil}
+        data={[1, 2, 3]}
+        // data={notifications}
         contentContainerStyle={styles.content}
         renderItem={({ item }) => {
           return (
@@ -54,11 +54,9 @@ const Social14 = memo(() => {
               </VStack>
               <VStack gap={4}>
                 <Text category="h5" maxWidth={259 * (width / 375)}>
-                  {item.text}
+                  Have you checked todays promos !
                 </Text>
-                <Text status="placeholder" category="c1">
-                  {/* {item.time} */}30 mins ago
-                </Text>
+                <Text category="c1">{/* {item.time} */}30 mins ago</Text>
               </VStack>
             </HStack>
           );

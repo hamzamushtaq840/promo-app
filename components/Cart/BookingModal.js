@@ -1,7 +1,7 @@
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@ui-kitten/components';
-import { arrayUnion, collection, doc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import {
   Dimensions,
@@ -21,9 +21,9 @@ import { i18n } from '../../translations';
 import { db } from '../../utlils/firebase';
 import { dateConverter } from '../../utlils/timeConverter';
 import HStack from '../Generic/HStack';
+import Loader from '../Generic/Loader';
 import VStack from '../Generic/VStack';
 import InputField from '../InputField';
-import Loader from '../Generic/Loader';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

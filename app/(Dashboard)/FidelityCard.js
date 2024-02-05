@@ -11,6 +11,7 @@ import Navbar from '../../components/Navbar';
 import useUserData from '../../hooks/useUserData';
 import Add from '../../svg/Add';
 import NavigationAction from './../../components/Generic/NavigationAction';
+import { i18n } from '../../translations';
 
 const FidelityCard = () => {
   const styles = useStyleSheet(themedStyles);
@@ -25,7 +26,7 @@ const FidelityCard = () => {
       }}>
       <TopNavigation
         alignment="start"
-        title={<Text>Fidelity Cards</Text>}
+        title={<Text>{i18n.t('fidelityCards')}</Text>}
         accessoryLeft={
           <NavigationAction
             marginRight={20}

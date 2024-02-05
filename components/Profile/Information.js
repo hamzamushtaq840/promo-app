@@ -38,8 +38,10 @@ const Information = memo(() => {
       if (langExists) {
         if (langExists === 'en') {
           setDisplayValue('English');
+          setSelectedIndex(new IndexPath(0));
         } else {
           setDisplayValue('French');
+          setSelectedIndex(new IndexPath(1));
         }
       }
     };
@@ -63,7 +65,7 @@ const Information = memo(() => {
         });
         await queryClient.invalidateQueries({ queryKey: ['userData'] });
         Toast.show({
-          type: 'error',
+          type: 'success',
           position: 'bottom',
           text1: 'Information Updated',
         });

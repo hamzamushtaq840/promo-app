@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { i18n } from '../../translations';
 import QRCode from 'react-native-qrcode-svg';
 import { Images } from '../../assets/images';
 import VStack from '../../components/Generic/VStack';
@@ -151,14 +152,14 @@ const AddCard = ({ setModal }) => {
             <Content contentContainerStyle={styles.content}>
               <Text
                 style={{ fontSize: 22, marginBottom: 10, ...FONTS['500'], textAlign: 'center' }}>
-                Add Card
+                {i18n.t('addCard')}
               </Text>
               <VStack padder border={10} gap={4}>
                 <Text style={{ fontSize: 14, color: '#959597', marginBottom: 5, lineHeight: 24 }}>
-                  STORE NAME
+                  {i18n.t('name')}
                 </Text>
                 <Input
-                  placeholder={'Add a store name'}
+                  placeholder={i18n.t('name')}
                   accessoryLeft={
                     <Image
                       source={require('./../../assets/icons/store.png')}
@@ -216,10 +217,10 @@ const AddCard = ({ setModal }) => {
                           alignItems: 'center',
                         }}>
                         <Text style={{ color: 'white', width: 100, textAlign: 'center' }}>
-                          Tap to scan
+                          {i18n.t('tapTo')}
                         </Text>
                         <Text style={{ color: 'white', width: 150, textAlign: 'center' }}>
-                          QR or Barcode
+                          {i18n.t('or')}
                         </Text>
                       </View>
                     )}
@@ -344,7 +345,7 @@ const AddCard = ({ setModal }) => {
                 <Button
                   status={'primary'}
                   style={{ width: '50%', textColor: 'white', alignSelf: 'center' }}
-                  children={loading ? <Loader /> : 'Add'}
+                  children={loading ? <Loader /> : i18n.t('add')}
                   disabled={!data}
                   onPress={() => {
                     handleSubmit();

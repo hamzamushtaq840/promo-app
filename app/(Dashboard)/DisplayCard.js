@@ -9,6 +9,7 @@ import Content from '../../components/Generic/Content';
 import HStack from '../../components/Generic/HStack';
 import NavigationAction from '../../components/Generic/NavigationAction';
 import VStack from '../../components/Generic/VStack';
+import { i18n } from '../../translations';
 
 const DisplayCard = () => {
   const styles = useStyleSheet(themedStyles);
@@ -19,7 +20,7 @@ const DisplayCard = () => {
     <Container style={{}}>
       <TopNavigation
         alignment="start"
-        title={<Text>Card Info</Text>}
+        title={<Text>{i18n.t('cardInfo')}</Text>}
         accessoryLeft={
           <NavigationAction
             marginRight={20}

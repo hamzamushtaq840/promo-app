@@ -137,7 +137,6 @@ const Profile10 = memo(() => {
           onPress={async () => {
             await AsyncStorage.removeItem('userId');
             while (router.canGoBack()) {
-              // Pop from stack until one element is left
               router.back();
             }
             await signOut(auth);

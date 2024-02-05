@@ -1,6 +1,6 @@
 {
   "expo": {
-    "scheme": "acme",
+    "scheme": "com.hamzamushtaq840.fidelity",
     "web": {
       "bundler": "metro"
     },
@@ -21,11 +21,9 @@
       "backgroundColor": "#3D195B",
       "resizeMode": "contain"
     },
-    "extra": {
-      "supportsRTL": true,
-      "router": {
-        "origin": false
-      }
+    "android": {
+      "googleServicesFile": "./google-services.json",
+      "package": "com.hamzamushtaq840.fidelity"
     }
   }
 }
