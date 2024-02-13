@@ -64,9 +64,6 @@ const Login = () => {
         setLoading(true);
         const result = await signInWithEmailAndPassword(auth, email, password);
         await AsyncStorage.setItem('userId', result.user.uid);
-        while (router.canGoBack()) {
-          router.back();
-        }
         router.replace('(Dashboard)/Home');
       } catch (error) {
         if (

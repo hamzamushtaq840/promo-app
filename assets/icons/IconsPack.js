@@ -40,6 +40,7 @@ const IconsPack = {
     dots: createIcon(Icons['dots']),
     forgot: createIcon(Icons['forgot']),
     cards2: createIcon(Icons['cards2']),
+    wheel: createIcon(Icons['wheel']),
   },
 };
 export default IconsPack;

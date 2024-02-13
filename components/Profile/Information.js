@@ -105,7 +105,7 @@ const Information = memo(() => {
           <Input
             placeholder={'Add a store name'}
             disabled
-            value={userData.email}
+            value={userData?.email}
             accessoryLeft={
               <Image
                 source={require('./../../assets/icons/store.png')}

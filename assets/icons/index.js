@@ -20,5 +20,6 @@ export const Icons = {
   forgot: require('./forgot.png'),
   scratch: require('./scratch.png'),
   cards2: require('./cards2.png'),
+  wheel: require('./wheel.png'),
   pencil: require('./ic_pencil.png'),
 };

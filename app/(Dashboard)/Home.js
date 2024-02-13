@@ -334,14 +334,28 @@ const Home = () => {
           )}
         </View>
         <Text category="h4" style={{ fontSize: 20, paddingHorizontal: 16, ...FONTS['700'] }}>
-          Scrach Card
+          Get a chance to win
         </Text>
-        <TouchableOpacity onPress={() => router.push('/ScratchCard2')}>
-          <Image
-            source={Icons.scratch}
-            style={{ width: 50, height: 50, marginHorizontal: 25, marginTop: 20 }}
-          />
-        </TouchableOpacity>
+        <HStack justify="flex-start" ml={5}>
+          <TouchableOpacity
+            style={{ alignItems: 'center' }}
+            onPress={() => router.push('/ScratchCard2')}>
+            <Image
+              source={Icons.scratch}
+              style={{ width: 50, height: 50, marginHorizontal: 25, marginTop: 20 }}
+            />
+            <Text style={{ textAlign: 'center', fontSize: 15, ...FONTS['500'] }}>Scratch Card</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ alignItems: 'center' }}
+            onPress={() => router.push('/SpinWheel')}>
+            <Image
+              source={Icons.wheel}
+              style={{ width: 50, height: 50, marginHorizontal: 25, marginTop: 20 }}
+            />
+            <Text style={{ textAlign: 'center', fontSize: 15, ...FONTS['500'] }}>Wheel</Text>
+          </TouchableOpacity>
+        </HStack>
       </Content>
       <Navbar />
     </Container>
