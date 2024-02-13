@@ -23,7 +23,16 @@
     },
     "android": {
       "googleServicesFile": "./google-services.json",
-      "package": "com.hamzamushtaq840.fidelity"
+      "package": "com.hamzamushtaq840.fidelity",
+      "permissions": ["android.permission.RECORD_AUDIO"]
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "ece4802f-2810-4a13-a420-0f60138b4ea3"
+      }
     }
   }
 }

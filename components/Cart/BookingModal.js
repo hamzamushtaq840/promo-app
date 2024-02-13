@@ -69,7 +69,7 @@ function BookingModal({ setModalVisible, item }) {
         const userRef = doc(db, 'users', userData.userId);
 
         await updateDoc(userRef, {
-          bookings: arrayUnion(item.id),
+          bookings: arrayUnion({ isCanceled: false, promoId: item.id }),
         });
 
         const webUsersRef = doc(db, 'web-users', item.parentId);
@@ -84,6 +84,7 @@ function BookingModal({ setModalVisible, item }) {
             persons,
             bookingDetails,
             bookedTime: new Date(),
+            isCanceled: false,
           }),
         });
 

@@ -1,9 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
-import { Input, StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components';
+import { Button, StyleService, TopNavigation, useStyleSheet } from '@ui-kitten/components';
+import { endOfWeek, startOfWeek } from 'date-fns';
 import { useRouter } from 'expo-router';
-import { collection, getDocs } from 'firebase/firestore';
+import {
+  collection,
+  collectionGroup,
+  getDoc,
+  getDocs,
+  limit,
+  query,
+  where,
+} from 'firebase/firestore';
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { FlatList, Image, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedRef,
@@ -20,8 +29,10 @@ import { FONTS } from '../../constants/theme';
 import useLayout from '../../hooks/useLayout';
 import { i18n } from '../../translations';
 import { db } from '../../utlils/firebase';
+import { dateConverter } from '../../utlils/timeConverter';
 import Content from './../../components/Generic/Content';
 import NavigationAction from './../../components/Generic/NavigationAction';
+import { Icons } from '../../assets/icons';
 
 const Home = () => {
   const { width } = useLayout();
@@ -144,6 +155,108 @@ const Home = () => {
     );
   }, []);
 
+  // const activePromo = useQuery({
+  //   queryKey: ['activePromo'],
+  //   queryFn: async () => {
+  //     try {
+  //       const currentDate = new Date();
+  //       const startOfWeekDate = startOfWeek(currentDate);
+  //       const endOfWeekDate = endOfWeek(currentDate);
+
+  //       const promoQuery = query(
+  //         collectionGroup(db, 'promo'),
+  //         where('isActive', '==', true),
+  //         where('endDate', '<', endOfWeekDate)
+  //       );
+
+  //       const promoSnapshot = await getDocs(promoQuery);
+  //       const promos = [];
+  //       for (const promoDoc of promoSnapshot.docs) {
+  //         const parentId = promoDoc.ref.parent.parent.id;
+  //         const parentDoc = await getDoc(promoDoc.ref.parent.parent);
+  //         const parentData = parentDoc.exists() ? parentDoc.data() : null;
+  //         const promoData = { id: promoDoc.id, parentId, parentData, ...promoDoc.data() };
+
+  //         const promoStartDate = new Date(dateConverter(promoData?.startDate).inputFormat);
+  //         if (promoStartDate >= startOfWeekDate) {
+  //           promos.push(promoData);
+  //         }
+  //       }
+  //       console.log(promos);
+  //       // return promos || [];
+  //     } catch (error) {
+  //       console.log(error);
+  //       throw new Error('Error fetching active promos');
+  //     }
+  //   },
+  //   onError: error => {
+  //     console.error('Error fetching active promos:', error);
+  //   },
+  // });
+
+  // const randomPromo = useQuery({
+  //   queryKey: ['randomPromos'],
+  //   queryFn: async () => {
+  //     try {
+  //       // Generate a random value for ordering
+  //       const randomOrderValue = Math.random();
+  //       // Query to get almost 10 random promos
+  //       const promoQuery = query(
+  //         collectionGroup(db, 'promo'),
+  //         where('random', '>=', randomOrderValue),
+  //         where('isActive', '==', true),
+  //         limit(5)
+  //       );
+
+  //       const promoSnapshot = await getDocs(promoQuery);
+  //       const promos = [];
+  //       for (const promoDoc of promoSnapshot.docs) {
+  //         const parentId = promoDoc.ref.parent.parent.id;
+  //         const parentDoc = await getDoc(promoDoc.ref.parent.parent);
+  //         const parentData = parentDoc.exists() ? parentDoc.data() : null;
+  //         const promoData = { id: promoDoc.id, parentId, parentData, ...promoDoc.data() };
+
+  //         const currentDate = new Date();
+  //         const promoStartDate = new Date(dateConverter(promoData.startDate).inputFormat);
+  //         const promoEndDate = new Date(dateConverter(promoData.endDate).inputFormat);
+
+  //         if (promoStartDate <= currentDate && promoEndDate > currentDate) {
+  //           promos.push(promoData);
+  //         }
+  //       }
+  //       console.log(promos);
+  //       return promos || [];
+  //     } catch (error) {
+  //       console.log(error);
+  //       throw new Error('Error fetching random promos');
+  //     }
+  //   },
+  //   onError: error => {
+  //     console.error('Error fetching random promos:', error);
+  //   },
+  //   refetchInterval: 10000000,
+  //   staleTime: Infinity,
+  // });
+
+  const renderProduct = ({ item }) => {
+    return (
+      <VStack key={index} style={{ width: (width - 50) / 3 }} itemsCenter mb={10}>
+        <TouchableOpacity
+          onPress={() => {
+            router.push({
+              pathname: `SingleCategory`,
+              params: { category: JSON.stringify(item) || [] },
+            });
+          }}>
+          <Image source={{ uri: item?.url }} style={{ width: 60, height: 60 }} />
+          <Text style={{ textAlign: 'center', fontSize: 15, ...FONTS['500'] }}>
+            {item?.name[categoryLanguage]}
+          </Text>
+        </TouchableOpacity>
+      </VStack>
+    );
+  };
+
   return (
     <Container
       style={{
@@ -176,18 +289,17 @@ const Home = () => {
         <VStack mt={10}>
           {images.isLoading === false && images?.data.length > 0 && (
             <Animated.FlatList
-              data={images?.data}
+              data={images?.data || []}
               scrollEventThrottle={16}
+              snapToInterval={width}
               renderItem={renderItem}
               ref={scrollRef}
               showsHorizontalScrollIndicator={false}
               horizontal
-              snapToInterval={width}
               bounces={false}
               pagingEnabled={false}
               decelerationRate="fast"
               onScroll={scrollHandler}
-              style={{ width: width }}
               onScrollEndDrag={event => onScrollEnd(event)}
             />
           )}
@@ -203,28 +315,33 @@ const Home = () => {
           {i18n.t('ourCategories')}
         </Text>
         {categories?.isLoading && <Loader status={'primary'} center mt={40} />}
-        {!categories?.isLoading && (
-          <HStack wrap mt={24} pb={40}>
-            {categories?.data?.map((food, index) => {
-              return (
-                <VStack key={index} style={{ width: (width - 20) / 3 }} itemsCenter mb={24}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      router.push({
-                        pathname: `SingleCategory`,
-                        params: { category: JSON.stringify(food) },
-                      });
-                    }}>
-                    <Image source={{ uri: food.url }} style={{ width: 60, height: 60 }} />
-                    <Text style={{ textAlign: 'center', fontSize: 15, ...FONTS['500'] }}>
-                      {food.name[categoryLanguage]}
-                    </Text>
-                  </TouchableOpacity>
-                </VStack>
-              );
-            })}
-          </HStack>
-        )}
+        <View style={{ marginVertical: 20 }}>
+          {!categories?.isLoading && categories?.data?.length > 0 && (
+            <FlatList
+              data={categories?.data || []}
+              renderItem={renderProduct}
+              horizontal
+              scrollEventThrottle={16}
+              keyExtractor={(i, _index) => `${_index}`}
+              style={{ flexGrow: 0 }}
+              snapToInterval={288}
+              decelerationRate="fast"
+              showsHorizontalScrollIndicator={false}
+              bounces={false}
+              pagingEnabled={false}
+              contentContainerStyle={styles.contentProduct}
+            />
+          )}
+        </View>
+        <Text category="h4" style={{ fontSize: 20, paddingHorizontal: 16, ...FONTS['700'] }}>
+          Scrach Card
+        </Text>
+        <TouchableOpacity onPress={() => router.push('/ScratchCard2')}>
+          <Image
+            source={Icons.scratch}
+            style={{ width: 50, height: 50, marginHorizontal: 25, marginTop: 20 }}
+          />
+        </TouchableOpacity>
       </Content>
       <Navbar />
     </Container>
@@ -242,11 +359,11 @@ const themedStyles = StyleService.create({
     alignItems: 'center',
   },
   imageView: {
-    height: 220,
+    height: 320,
   },
   image: {
     width: '100%',
-    height: 220,
+    height: 320,
   },
   box: {
     height: 28,
@@ -301,9 +418,6 @@ const themedStyles = StyleService.create({
   buttonLogin: {
     flex: 1,
     marginRight: 8,
-  },
-  contentProduct: {
-    paddingLeft: 14,
   },
   itemProduct: {
     marginRight: 8,

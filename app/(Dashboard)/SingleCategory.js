@@ -64,7 +64,6 @@ const SingleCategory = () => {
         const currentDate = new Date();
         const startOfWeekDate = startOfWeek(currentDate);
         const endOfWeekDate = endOfWeek(currentDate);
-        console.log(endOfWeekDate);
 
         const promoQuery = query(
           collectionGroup(db, 'promo'),
@@ -88,7 +87,6 @@ const SingleCategory = () => {
         }
         return promos || [];
       } catch (error) {
-        console.error('Error fetching active promos:', error);
         throw new Error('Error fetching active promos');
       }
     },
@@ -152,7 +150,7 @@ const SingleCategory = () => {
           where('random', '>=', randomOrderValue),
           where('category', '==', categoryName),
           where('isActive', '==', true),
-          limit(10)
+          limit(5)
         );
 
         const promoSnapshot = await getDocs(promoQuery);
@@ -180,6 +178,8 @@ const SingleCategory = () => {
     onError: error => {
       console.error('Error fetching random promos:', error);
     },
+    refetchInterval: 10000000,
+    staleTime: Infinity,
   });
 
   const flashDealPromo = useQuery({
@@ -209,7 +209,6 @@ const SingleCategory = () => {
             promos.push(promoData);
           }
         }
-        console.log(promos);
         return promos || [];
       } catch (error) {
         console.error('Error fetching active promos:', error);

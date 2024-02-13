@@ -27,7 +27,7 @@ const Home = () => {
     queryKey: ['bookings', userData?.bookings],
     queryFn: async () => {
       try {
-        const favourites = userData?.bookings || [];
+        const bookings = userData?.bookings || [];
 
         const promoQuery = query(collectionGroup(db, 'promo'));
 
@@ -37,7 +37,7 @@ const Home = () => {
         // Fetching promos and adding parentId field and parentData
         for (const promoDoc of promoSnapshot.docs) {
           // Filter based on the 'id' field
-          if (favourites?.includes(promoDoc.id)) {
+          if (bookings.some(booking => booking.promoId === promoDoc.id)) {
             const parentId = promoDoc.ref.parent.parent.id;
             const parentDoc = await getDoc(promoDoc.ref.parent.parent);
 

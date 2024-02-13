@@ -1,6 +1,6 @@
 import { StyleService, Text, TopNavigation, useStyleSheet } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AddCard from '../../components/Fidelity/AddCard';
@@ -10,15 +10,23 @@ import Container from '../../components/Generic/Container';
 import Navbar from '../../components/Navbar';
 import useUserData from '../../hooks/useUserData';
 import Add from '../../svg/Add';
-import NavigationAction from './../../components/Generic/NavigationAction';
 import { i18n } from '../../translations';
+import NavigationAction from './../../components/Generic/NavigationAction';
 
 const FidelityCard = () => {
   const styles = useStyleSheet(themedStyles);
   const router = useRouter();
   const { userData } = useUserData();
   const [modal, setModal] = React.useState(false);
+  const [current, setCurrent] = useState('3rdPartyCards');
 
+  // const logout = async () => {
+  //   await AsyncStorage.removeItem('userId');
+  //   await signOut(auth);
+  //   router.replace('/');
+  // };
+
+  // useEffect(() => {}, [logout()]);
   return (
     <Container
       style={{
@@ -39,15 +47,20 @@ const FidelityCard = () => {
           />
         }
         accessoryRight={
-          <View>
-            <TouchableOpacity onPress={() => setModal(true)}>
-              <Add />
-            </TouchableOpacity>
-          </View>
+          userData?.fidelity.length > 0 &&
+          current === '3rdPartyCards' && (
+            <View>
+              <TouchableOpacity onPress={() => setModal(true)}>
+                <Add />
+              </TouchableOpacity>
+            </View>
+          )
         }
       />
       {userData?.fidelity.length === 0 && <NoCard setModal={setModal} />}
-      {userData?.fidelity.length > 0 && <AllFidelityCards setModal={setModal} />}
+      {userData?.fidelity.length > 0 && (
+        <AllFidelityCards current={current} setCurrent={setCurrent} setModal={setModal} />
+      )}
       {modal && <AddCard setModal={setModal} />}
       <Navbar />
     </Container>

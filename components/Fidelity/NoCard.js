@@ -30,7 +30,7 @@ const NoCard = ({ setModal }) => {
         // size={'small'}
         textFontFamily={'Roboto-Bold500'}
         style={{ width: '50%', textColor: 'white', alignSelf: 'center', marginTop: 80 }}
-        children={i18n.t('Add New Card')}
+        children={i18n.t('addCard')}
         onPress={() => {
           setModal(true);
           // router.push('/NewCard');

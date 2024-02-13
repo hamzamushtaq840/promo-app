@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { Button, Icon, Spinner, TopNavigation } from '@ui-kitten/components';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 import React, { useRef, useState } from 'react';
 import { Animated, ScrollView, TouchableOpacity, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
@@ -41,7 +41,7 @@ const SingleProductDetail = () => {
   const [maximize, setMaximize] = useState(false);
   const heightAnim = useRef(new Animated.Value(360)).current;
   const params = useLocalSearchParams();
-  const item = JSON.parse(params.item);
+  const item = JSON.parse(params?.item);
   const router = useRouter();
   const categoryLanguage = i18n.locale;
   const [showAll, setShowAll] = useState(false);
@@ -50,6 +50,9 @@ const SingleProductDetail = () => {
   const { userData } = useUserData();
   const queryClient = useQueryClient();
   const [modal, setModal] = useState(false);
+  let abc = { ...userData };
+  const bookings = abc?.bookings?.find(b => b.promoId === item.id);
+  let id = userData?.userId;
 
   const handlePress = () => {
     if (maximize === false) {
@@ -88,7 +91,6 @@ const SingleProductDetail = () => {
         text1: 'Added to favourites',
       });
     } catch (error) {
-      console.log(error);
       console.error('Error adding promo to favorites:', error.message);
     } finally {
       setLoading(false); // Set loading to false regardless of success or failure
@@ -122,30 +124,48 @@ const SingleProductDetail = () => {
     }
   };
 
-  const addBookingToUserBookings = async () => {
+  const cancelBooking = async () => {
     try {
-      setLoading2(true); // Set loading to true when the operation starts
+      setLoading2(true);
+      const webUsersRef = doc(db, 'web-users', item.parentId);
+      const promoDocRef = doc(webUsersRef, 'promo', item.id);
 
-      // Get a reference to the user document
-      const userRef = doc(db, 'users', userData.userId);
+      const promoSnapshot = await getDoc(promoDocRef);
+      const promoData = promoSnapshot.data();
 
-      // Update the user document to add the bookingId to the bookings array
-      await updateDoc(userRef, {
-        bookings: arrayUnion(item.id),
-      });
+      if (promoData) {
+        const updatedBookings = promoData.bookings.map(booking => {
+          if (booking.userId === id) {
+            return { ...booking, isCanceled: true };
+          }
+          return booking;
+        });
 
-      // Invalidate the user data query to reflect the changes
+        await updateDoc(promoDocRef, { bookings: updatedBookings });
+      }
+
+      // Find the user's document
+      const userRef = doc(db, 'users', id);
+      const userSnapshot = await getDoc(userRef);
+      const userData2 = userSnapshot.data();
+
+      if (userData2) {
+        // Find the booking in the user's bookings array based on promoId
+        const updatedBookings = userData2.bookings.map(booking => {
+          if (booking.promoId === item.id) {
+            return { ...booking, isCanceled: true };
+          }
+          return booking;
+        });
+
+        // Update the user's document with the updated bookings array
+        await updateDoc(userRef, { bookings: updatedBookings });
+      }
       await queryClient.invalidateQueries({ queryKey: ['userData'] });
-
-      Toast.show({
-        type: 'success',
-        position: 'bottom',
-        text1: 'Booking added successfully',
-      });
     } catch (error) {
-      console.error('Error adding booking:', error.message);
+      console.error('Error canceling booking:', error);
     } finally {
-      setLoading2(false); // Set loading to false regardless of success or failure
+      setLoading2(false);
     }
   };
 
@@ -193,23 +213,22 @@ const SingleProductDetail = () => {
 
         <HStack justify="space-between" style={{ width: '100%' }}>
           <VStack>
-            {item.webLink && (
+            {item?.webLink && (
               <HStack itemsCenter justify="flex-start" gap={8}>
                 <Icon name="link" style={{ width: 12, height: 12 }} color="red" />
-                <Text>{item.webLink}</Text>
+                <Text>{item?.webLink}</Text>
               </HStack>
             )}
             <HStack itemsCenter justify="flex-start" pl={2} gap={8}>
               <Icon name="calendar" style={{ width: 12, height: 12 }} color="red" />
               <Text>
-                {dateConverter(item.startDate).customFormat} -
-                {dateConverter(item.endDate).customFormat}
+                {dateConverter(item?.startDate)?.customFormat} -
+                {dateConverter(item?.endDate)?.customFormat}
               </Text>
             </HStack>
-            {item.parentData.companyAddresses.map((address, index) => {
+            {item?.parentData?.companyAddresses.map((address, index) => {
               return (
                 <ScrollView key={index} style={{ maxHeight: 100 }}>
-                  {/* Show all addresses if showAll is true, otherwise show only one */}
                   {showAll || index === 0 ? (
                     <React.Fragment>
                       {/* Address Information */}
@@ -246,7 +265,7 @@ const SingleProductDetail = () => {
             {loading && <Spinner size="small" />}
           </VStack>
         </HStack>
-        {item.parentData.companyAddresses.length > 1 && (
+        {item?.parentData?.companyAddresses.length > 1 && (
           <TouchableOpacity onPress={() => setShowAll(!showAll)}>
             <Text style={{ alignSelf: 'flex-end', color: '#959597', fontSize: 12 }}>
               {showAll ? i18n.t('viewLess') : i18n.t('viewAddresses')}
@@ -293,16 +312,26 @@ const SingleProductDetail = () => {
             <Button
               status={'primary'}
               size={'small'}
-              disabled={userData.bookings.includes(item.id) ? true : false}
+              disabled={bookings && bookings.isCanceled}
               onPress={() => {
-                setModal(true);
+                if (!bookings) {
+                  setModal(true);
+                } else {
+                  if (!bookings.isCanceled) {
+                    cancelBooking();
+                  }
+                }
               }}
               style={{ width: '182', textColor: 'white', alignSelf: 'center' }}
               children={
                 loading2 ? (
                   <Loader />
-                ) : userData.bookings.includes(item.id) ? (
-                  i18n.t('book')
+                ) : bookings ? (
+                  bookings.isCanceled ? (
+                    'Canceled'
+                  ) : (
+                    'Cancel'
+                  )
                 ) : (
                   i18n.t('book')
                 )

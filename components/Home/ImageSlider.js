@@ -1,10 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Image, StyleSheet, SafeAreaView, ScrollView, Dimensions, Text } from 'react-native';
 
 const ImageSlider = ({ images }) => {
   const { width } = Dimensions.get('window');
   const height = 418;
   const [active, setActive] = useState(0);
+  const scrollViewRef = useRef();
+
+  useEffect(() => {
+    const slideInterval = setInterval(() => {
+      const nextIndex = (active + 1) % images.length;
+      scrollViewRef.current.scrollTo({
+        animated: true,
+        x: nextIndex * width,
+        y: 0,
+      });
+      setActive(nextIndex);
+    }, 3000); // Adjust the interval time as needed (in milliseconds)
+
+    return () => clearInterval(slideInterval);
+  }, [active, images?.length]);
 
   const onScrollChange = ({ nativeEvent }) => {
     const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
@@ -16,6 +31,7 @@ const ImageSlider = ({ images }) => {
   return (
     <View style={{ position: 'relative' }}>
       <ScrollView
+        ref={scrollViewRef}
         pagingEnabled
         horizontal
         onScroll={onScrollChange}

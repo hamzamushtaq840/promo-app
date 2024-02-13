@@ -11,11 +11,10 @@ import QRCode from 'react-native-qrcode-svg';
 import useUserData from '../../hooks/useUserData';
 import { i18n } from './../../translations';
 
-const AllFidelityCards = () => {
+const AllFidelityCards = ({ current, setCurrent }) => {
   const styles = useStyleSheet(themedStyles);
   const router = useRouter();
   const { userData } = useUserData();
-  const [current, setCurrent] = useState('3rdPartyCards');
   const [appCards, setAppCards] = useState([]);
   const [thirdPartyCards, setThirdPartyCards] = useState([]);
 

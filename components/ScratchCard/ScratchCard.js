@@ -7,7 +7,7 @@ import { Text } from 'react-native';
 
 export const ScratchCard = ({
   brushSize = 30,
-  image = 'https://pbs.twimg.com/media/FZ249SNUYAAxes7.jpg',
+  image = 'https://t4.ftcdn.net/jpg/03/59/88/53/360_F_359885319_Poc8GIIxb4fuTXKkfnRxCkdi3xqzhlJx.jpg',
   height = 300,
   width = 300,
   percentage = 70,

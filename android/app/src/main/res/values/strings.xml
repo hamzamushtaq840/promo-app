@@ -5,4 +5,5 @@
   <string name="facebook_app_id">48127127xxxxxxxx</string>
   <string name="facebook_client_token">c5078631e4065b60d7544a95xxxxxxxx</string>
   <string name="fb_login_protocol_scheme">fb48127127xxxxxxxx</string>
+  <string name="ExpoLocalization_supportsRTL" translatable="false">undefined</string>
 </resources>

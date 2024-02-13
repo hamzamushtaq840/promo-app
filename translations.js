@@ -45,7 +45,7 @@ export const translations = {
     endingSoon: 'Ending Soon promos',
     randomPromos: 'Random Promos',
     noPromo: 'No promos found',
-    addCard: 'Add Cadd',
+    addCard: 'Add Card',
     add: 'Add',
     rescan: 'Rescan',
     barCode: 'Bar Code',

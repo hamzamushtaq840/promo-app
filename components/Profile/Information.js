@@ -28,7 +28,7 @@ const Information = memo(() => {
   const data = ['English', 'French'];
   const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
   const [displayValue, setDisplayValue] = React.useState(data[0]);
-  const [fullName, setFullName] = React.useState(userData.name);
+  const [fullName, setFullName] = React.useState(userData?.name);
   const [isLoading, setLoading] = React.useState(false);
   const queryClient = useQueryClient();
 
@@ -58,7 +58,7 @@ const Information = memo(() => {
     } else {
       try {
         setLoading(true);
-        const docRef = doc(db, 'users', userData.userId);
+        const docRef = doc(db, 'users', userData?.userId);
         await updateDoc(docRef, {
           name: fullName,
           language: displayValue,
