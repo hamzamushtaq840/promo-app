@@ -271,7 +271,13 @@ const Home = () => {
               router.push('/Notification');
             }}
             style={{ position: 'relative' }}>
-            <NavigationAction marginHorizontal={6} height={20} width={16} icon="notifications" />
+            <NavigationAction
+              onPress={() => {}}
+              marginHorizontal={6}
+              height={20}
+              width={16}
+              icon="notifications"
+            />
             <View
               style={{
                 width: 8,

@@ -32,14 +32,13 @@ import Skeleton from '../../components/Home/Skeleton';
 import NoData from '../../components/Home/NoData';
 
 const SingleCategory = () => {
-  // const currentDate = Timestamp.now();
   const router = useRouter();
-  const { width } = useLayout();
   const { setAllPromos } = useUserData();
   const params = useLocalSearchParams();
   const data = JSON.parse(params.category);
   const categoryLanguage = i18n.locale;
   const categoryName = data?.dbName;
+  const [search, setSearch] = useState('');
 
   const handleCounter = async val => {
     const promoDocRef = doc(db, 'web-users', val.parentId, 'promo', val.id);
@@ -260,247 +259,245 @@ const SingleCategory = () => {
           />
         </VStack>
 
-        {/* list of deals of the week */}
-        {(activePromo?.data?.length > 0 || activePromo.isLoading) && (
-          <VStack gap={12} mt={20}>
-            <View
-              style={{
-                paddingHorizontal: 14,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400', ...FONTS['300'] }}>
-                {i18n.t('listWeek')}
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push({
-                    pathname: '(Dashboard)/AllPromos',
-                    params: {
-                      item: JSON.stringify({
-                        category: data?.name[categoryLanguage],
-                        name: i18n.t('listWeek'),
-                      }),
-                    },
-                  });
-                  setAllPromos(activePromo?.data);
-                }}>
-                <Text
+        {search === '' && (
+          <View>
+            {/* list of deals of the week */}
+            {(activePromo?.data?.length > 0 || activePromo.isLoading) && (
+              <VStack gap={12} mt={20}>
+                <View
                   style={{
-                    fontSize: 14,
-                    fontFamily: 'Roboto-Regular400',
-                    color: '#959597',
-                    ...FONTS['500'],
+                    paddingHorizontal: 14,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}>
-                  {i18n.t('seeAll')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {
-              <FlatList
-                data={activePromo?.data || []}
-                renderItem={renderProduct}
-                horizontal
-                scrollEventThrottle={16}
-                keyExtractor={(i, _index) => `${_index}`}
-                style={{ flexGrow: 0 }}
-                snapToInterval={288}
-                decelerationRate="fast"
-                showsHorizontalScrollIndicator={false}
-                bounces={false}
-                pagingEnabled={false}
-                contentContainerStyle={styles.contentProduct}
-              />
-            }
-          </VStack>
-        )}
-        {activePromo?.isLoading && <Skeleton />}
+                  <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400', ...FONTS['300'] }}>
+                    {i18n.t('listWeek')}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      router.push({
+                        pathname: '(Dashboard)/AllPromos',
+                        params: {
+                          item: JSON.stringify({
+                            category: data?.name[categoryLanguage],
+                            name: i18n.t('listWeek'),
+                          }),
+                        },
+                      });
+                      setAllPromos(activePromo?.data);
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontFamily: 'Roboto-Regular400',
+                        color: '#959597',
+                        ...FONTS['500'],
+                      }}>
+                      {i18n.t('seeAll')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {
+                  <FlatList
+                    data={activePromo?.data || []}
+                    renderItem={renderProduct}
+                    horizontal
+                    scrollEventThrottle={16}
+                    keyExtractor={(i, _index) => `${_index}`}
+                    style={{ flexGrow: 0 }}
+                    snapToInterval={288}
+                    decelerationRate="fast"
+                    showsHorizontalScrollIndicator={false}
+                    bounces={false}
+                    pagingEnabled={false}
+                    contentContainerStyle={styles.contentProduct}
+                  />
+                }
+              </VStack>
+            )}
 
-        {/* list of flash deals */}
-        {(flashDealPromo?.data?.length > 0 || flashDealPromo.isLoading) && (
-          <VStack gap={12} mt={20}>
-            <View
-              style={{
-                paddingHorizontal: 14,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400', ...FONTS['300'] }}>
-                {i18n.t('flashDeals')}
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push({
-                    pathname: '(Dashboard)/AllPromos',
-                    params: {
-                      item: JSON.stringify({
-                        category: data?.name[categoryLanguage],
-                        name: i18n.t('flashDeals'),
-                      }),
-                    },
-                  });
-                  setAllPromos(flashDealPromo?.data);
-                }}>
-                <Text
+            {activePromo?.isLoading && <Skeleton />}
+
+            {/* list of flash deals */}
+            {(flashDealPromo?.data?.length > 0 || flashDealPromo.isLoading) && (
+              <VStack gap={12} mt={20}>
+                <View
                   style={{
-                    fontSize: 14,
-                    fontFamily: 'Roboto-Regular400',
-                    color: '#959597',
-                    ...FONTS['500'],
+                    paddingHorizontal: 14,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}>
-                  {i18n.t('seeAll')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {
-              <FlatList
-                data={flashDealPromo?.data || []}
-                renderItem={renderProduct}
-                horizontal
-                scrollEventThrottle={16}
-                keyExtractor={(i, _index) => `${_index}`}
-                style={{ flexGrow: 0 }}
-                snapToInterval={288}
-                decelerationRate="fast"
-                showsHorizontalScrollIndicator={false}
-                bounces={false}
-                pagingEnabled={false}
-                contentContainerStyle={styles.contentProduct}
-              />
-            }
-          </VStack>
-        )}
-        {flashDealPromo?.isLoading && <Skeleton />}
+                  <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400', ...FONTS['300'] }}>
+                    {i18n.t('flashDeals')}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      router.push({
+                        pathname: '(Dashboard)/AllPromos',
+                        params: {
+                          item: JSON.stringify({
+                            category: data?.name[categoryLanguage],
+                            name: i18n.t('flashDeals'),
+                          }),
+                        },
+                      });
+                      setAllPromos(flashDealPromo?.data);
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontFamily: 'Roboto-Regular400',
+                        color: '#959597',
+                        ...FONTS['500'],
+                      }}>
+                      {i18n.t('seeAll')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {
+                  <FlatList
+                    data={flashDealPromo?.data || []}
+                    renderItem={renderProduct}
+                    horizontal
+                    scrollEventThrottle={16}
+                    keyExtractor={(i, _index) => `${_index}`}
+                    style={{ flexGrow: 0 }}
+                    snapToInterval={288}
+                    decelerationRate="fast"
+                    showsHorizontalScrollIndicator={false}
+                    bounces={false}
+                    pagingEnabled={false}
+                    contentContainerStyle={styles.contentProduct}
+                  />
+                }
+              </VStack>
+            )}
+            {flashDealPromo?.isLoading && <Skeleton />}
 
-        {/* Ending soon promos */}
-        {(endingSoonPromo?.data?.length > 0 || endingSoonPromo.isLoading) && (
-          <VStack gap={12} mt={20}>
-            <View
-              style={{
-                paddingHorizontal: 14,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400', ...FONTS['300'] }}>
-                {i18n.t('endingSoon')}
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push({
-                    pathname: '(Dashboard)/AllPromos',
-                    params: {
-                      item: JSON.stringify({
-                        category: data?.name[categoryLanguage],
-                        name: i18n.t('endingSoon'),
-                      }),
-                    },
-                  });
-                  setAllPromos(endingSoonPromo?.data);
-                }}>
-                <Text
+            {/* Ending soon promos */}
+            {(endingSoonPromo?.data?.length > 0 || endingSoonPromo.isLoading) && (
+              <VStack gap={12} mt={20}>
+                <View
                   style={{
-                    fontSize: 14,
-                    fontFamily: 'Roboto-Regular400',
-                    color: '#959597',
-                    ...FONTS['500'],
+                    paddingHorizontal: 14,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}>
-                  {i18n.t('seeAll')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {
-              <FlatList
-                data={endingSoonPromo?.data || []}
-                renderItem={renderProduct}
-                horizontal
-                scrollEventThrottle={16}
-                keyExtractor={(i, _index) => `${_index}`}
-                style={{ flexGrow: 0 }}
-                snapToInterval={288}
-                decelerationRate="fast"
-                showsHorizontalScrollIndicator={false}
-                bounces={false}
-                pagingEnabled={false}
-                contentContainerStyle={styles.contentProduct}
-              />
-            }
-          </VStack>
-        )}
-        {endingSoonPromo?.isLoading && <Skeleton />}
+                  <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400', ...FONTS['300'] }}>
+                    {i18n.t('endingSoon')}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      router.push({
+                        pathname: '(Dashboard)/AllPromos',
+                        params: {
+                          item: JSON.stringify({
+                            category: data?.name[categoryLanguage],
+                            name: i18n.t('endingSoon'),
+                          }),
+                        },
+                      });
+                      setAllPromos(endingSoonPromo?.data);
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontFamily: 'Roboto-Regular400',
+                        color: '#959597',
+                        ...FONTS['500'],
+                      }}>
+                      {i18n.t('seeAll')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {
+                  <FlatList
+                    data={endingSoonPromo?.data || []}
+                    renderItem={renderProduct}
+                    horizontal
+                    scrollEventThrottle={16}
+                    keyExtractor={(i, _index) => `${_index}`}
+                    style={{ flexGrow: 0 }}
+                    snapToInterval={288}
+                    decelerationRate="fast"
+                    showsHorizontalScrollIndicator={false}
+                    bounces={false}
+                    pagingEnabled={false}
+                    contentContainerStyle={styles.contentProduct}
+                  />
+                }
+              </VStack>
+            )}
+            {endingSoonPromo?.isLoading && <Skeleton />}
 
-        {/* Random promos */}
-        {(randomPromo?.data?.length > 0 || randomPromo.isLoading) && (
-          <VStack gap={12} mt={20}>
-            <View
-              style={{
-                paddingHorizontal: 14,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-              }}>
-              <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400', ...FONTS['300'] }}>
-                {i18n.t('randomPromos')}
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push({
-                    pathname: '(Dashboard)/AllPromos',
-                    params: {
-                      item: JSON.stringify({
-                        category: data?.name[categoryLanguage],
-                        name: i18n.t('randomPromos'),
-                      }),
-                    },
-                  });
-                  setAllPromos(randomPromo?.data);
-                }}>
-                <Text
+            {/* Random promos */}
+            {(randomPromo?.data?.length > 0 || randomPromo.isLoading) && (
+              <VStack gap={12} mt={20}>
+                <View
                   style={{
-                    fontSize: 14,
-                    fontFamily: 'Roboto-Regular400',
-                    color: '#959597',
-                    ...FONTS['500'],
+                    paddingHorizontal: 14,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                   }}>
-                  {i18n.t('seeAll')}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {
-              <FlatList
-                data={randomPromo?.data || []}
-                renderItem={renderProduct}
-                horizontal
-                scrollEventThrottle={16}
-                keyExtractor={(i, _index) => `${_index}`}
-                style={{ flexGrow: 0 }}
-                snapToInterval={288}
-                decelerationRate="fast"
-                showsHorizontalScrollIndicator={false}
-                bounces={false}
-                pagingEnabled={false}
-                contentContainerStyle={styles.contentProduct}
-              />
-            }
-          </VStack>
-        )}
-        {randomPromo?.isLoading && <Skeleton />}
+                  <Text style={{ fontSize: 18, fontFamily: 'Roboto-Regular400', ...FONTS['300'] }}>
+                    {i18n.t('randomPromos')}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      router.push({
+                        pathname: '(Dashboard)/AllPromos',
+                        params: {
+                          item: JSON.stringify({
+                            category: data?.name[categoryLanguage],
+                            name: i18n.t('randomPromos'),
+                          }),
+                        },
+                      });
+                      setAllPromos(randomPromo?.data);
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontFamily: 'Roboto-Regular400',
+                        color: '#959597',
+                        ...FONTS['500'],
+                      }}>
+                      {i18n.t('seeAll')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {
+                  <FlatList
+                    data={randomPromo?.data || []}
+                    renderItem={renderProduct}
+                    horizontal
+                    scrollEventThrottle={16}
+                    keyExtractor={(i, _index) => `${_index}`}
+                    style={{ flexGrow: 0 }}
+                    snapToInterval={288}
+                    decelerationRate="fast"
+                    showsHorizontalScrollIndicator={false}
+                    bounces={false}
+                    pagingEnabled={false}
+                    contentContainerStyle={styles.contentProduct}
+                  />
+                }
+              </VStack>
+            )}
 
+            {randomPromo?.isLoading && <Skeleton />}
+          </View>
+        )}
         {randomPromo?.data?.length === 0 &&
           flashDealPromo?.data?.length === 0 &&
           endingSoonPromo?.data?.length === 0 &&
           activePromo?.data?.length === 0 && <NoData />}
 
-        {/* Scratch Card */}
-        {/* <View>
-          <Button
-            style={{ marginTop: 30, marginHorizontal: 12 }}
-            onPress={() => {
-              router.push('/ScratchCard2');
-            }}>
-            Scratch And Win
-          </Button>
-        </View> */}
-
-        {/* <SpinWheel /> */}
+        {/* {search !== '' && (
+          <View>
+            <Text>Searching</Text>
+          </View>
+        )} */}
       </Content>
       <Navbar />
     </Container>

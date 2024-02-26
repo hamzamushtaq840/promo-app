@@ -42,7 +42,7 @@ const Social14 = memo(() => {
           return (
             <HStack
               level="2"
-              opacity={item.readed ? 0.5 : 1}
+              opacity={1}
               justify="flex-start"
               gap={16}
               padding={16}

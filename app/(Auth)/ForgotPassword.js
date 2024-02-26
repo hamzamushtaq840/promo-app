@@ -33,7 +33,7 @@ const Register = () => {
         setLoading(true);
         await sendPasswordResetEmail(auth, email);
         Toast.show({
-          type: 'error',
+          type: 'success',
           position: 'top',
           text1: 'Email sent successfully',
         });

@@ -1,11 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button, Spinner } from '@ui-kitten/components';
 import { useRouter } from 'expo-router';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { collection, getDocs } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { Image, Keyboard, Text, TouchableOpacity, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Toast from 'react-native-toast-message';
 import Container from '../components/Generic/Container';
 import Loader from '../components/Generic/Loader';
 import InputField from '../components/InputField';
@@ -14,9 +15,8 @@ import Eye from '../svg/Eye';
 import EyeOff from '../svg/EyeOff';
 import Lock from '../svg/Lock';
 import { i18n } from '../translations';
-import { auth } from '../utlils/firebase';
 import { FONTS } from './../constants/theme';
-import Toast from 'react-native-toast-message';
+import { db } from '../utlils/firebase';
 
 const Login = () => {
   const router = useRouter();
@@ -62,28 +62,29 @@ const Login = () => {
       try {
         Keyboard.dismiss();
         setLoading(true);
-        const result = await signInWithEmailAndPassword(auth, email, password);
-        await AsyncStorage.setItem('userId', result.user.uid);
-        router.replace('(Dashboard)/Home');
-      } catch (error) {
-        if (
-          error.code === 'auth/user-not-found' ||
-          error.code === 'auth/invalid-login-credentials' ||
-          error.code === 'auth/invalid-email'
-        ) {
+        // Check if user exists in the database
+        const snapshot = await getDocs(collection(db, 'users'));
+        const existingUser = snapshot.docs.find(doc => doc.data().email === email);
+        if (existingUser && existingUser.data().password === password) {
+          // Login successful
+          await AsyncStorage.setItem('userId', existingUser.id); // Store user ID in AsyncStorage
+          router.replace('(Dashboard)/Home');
+        } else {
+          // Invalid credentials
           Toast.show({
             type: 'error',
             position: 'bottom',
             text1: 'Invalid Credentials',
           });
         }
-        if (error.code === 'auth/too-many-requests') {
-          Toast.show({
-            type: 'error',
-            position: 'bottom',
-            text1: 'Too many wrong attempts',
-          });
-        }
+      } catch (error) {
+        // Handle any errors
+        console.log(error);
+        Toast.show({
+          type: 'error',
+          position: 'bottom',
+          text1: error.message,
+        });
       } finally {
         setLoading(false);
       }
